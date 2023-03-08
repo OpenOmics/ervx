@@ -1,13 +1,13 @@
 # Project Information
-site_name: baseline
+site_name: ervx
 site_author: Skyler Kuhn
 site_description: >-
-  An awesome OpenOmics baseline pipeline
+  An awesome OpenOmics ervx pipeline
 
 # Repository
-repo_name: OpenOmics/baseline
-repo_url: https://github.com/OpenOmics/baseline
-edit_uri: https://github.com/OpenOmics/baseline/edit/main/docs/
+repo_name: OpenOmics/ervx
+repo_url: https://github.com/OpenOmics/ervx
+edit_uri: https://github.com/OpenOmics/ervx/edit/main/docs/
 
 # Extra
 extra_css:
@@ -98,9 +98,9 @@ markdown_extensions:
 nav:
   - About: index.md
   - Commands: 
-    - baseline run: usage/run.md
-    - baseline unlock: usage/unlock.md
-    - baseline cache: usage/cache.md
+    - ervx run: usage/run.md
+    - ervx unlock: usage/unlock.md
+    - ervx cache: usage/cache.md
   - FAQ:
     - General Questions: faq/questions.md
   - License: license.md
