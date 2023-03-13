@@ -128,8 +128,5 @@ rule all:
         #expand(join(workpath,degall_dir,"PcaReport_{dtype}.html"),dtype=dtypes),
 
         # MultiQC
-        join(workpath,"Reports","multiqc_report.html"),
-
-        # RNA QC Report
-        join(workpath,"Reports","RNA_Report.html"),
+        join(workpath,"Reports","multiqc_report.html")
 
