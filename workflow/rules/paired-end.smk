@@ -905,9 +905,7 @@ rule telescope:
         outdir=join(workpath, telescope_dir),
         gtf_file = config['references']['rnaseq']['GTFFILE'],
         name = "{name}"
-    envmodules:
-        config['bin'][pfamily]['tool_versions']['SAMTOOLSVER'],
-        config['bin'][pfamily]['tool_versions']['TELESCOPE']
+    container: config['images']['telescope']
     shell: """
     mkdir -p {params.outdir}
     cd {params.outdir}
@@ -916,4 +914,5 @@ rule telescope:
         --attribute transcript_id {params.gtf_file} \
         --exp_tag {params.name}
     """
+
 
