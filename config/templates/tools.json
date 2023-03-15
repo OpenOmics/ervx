@@ -26,7 +26,8 @@
                 "SAMTOOLSVER": "samtools/1.6",
                 "STARVER": "STAR/2.7.6a",
                 "SUBREADVER": "subread/1.5.2",
-                "UCSCVER": "ucsc/405"
+                "UCSCVER": "ucsc/405",
+                "TELESCOPE": "telescope/6cd5525" 
             },
             "tool_parameters": {
                 "FASTAWITHADAPTERSETD": "resources/TruSeq_and_nextera_adapters.consolidated.fa",

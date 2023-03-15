@@ -1488,6 +1488,12 @@ def parsed_arguments(name, description):
         help = argparse.SUPPRESS
     )
 
+    subparser_run.add_argument(
+        '--transposable-elem-gtf',
+        required = True,
+        type = str,
+        help = argparse.SUPPRESS
+    )
     # Optional Arguments
     # Add custom help message
     subparser_run.add_argument(

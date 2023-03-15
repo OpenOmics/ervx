@@ -893,3 +893,27 @@ rule rnaseq_multiqc:
     python3 {params.pyparser} {params.logfiles} {params.outdir}
     """
 
+
+rule telescope:
+    input:
+        bam=join(workpath,bams_dir,"{name}.star_rg_added.sorted.dmark.bam"),
+    output:
+        sorted=join(workpath,bams_dir,"{name}.star_rg_added.sorted.by.name.dmark.bam"),
+        tlscp=join(workpath, telescope_dir, "{name}-TE_counts.tsv")
+    params:
+        rname="pl:telescope",
+        outdir=join(workpath, telescope_dir),
+        gtf_file = config['references']['rnaseq']['GTFFILE'],
+        name = "{name}"
+    envmodules:
+        config['bin'][pfamily]['tool_versions']['SAMTOOLSVER'],
+        config['bin'][pfamily]['tool_versions']['TELESCOPE']
+    shell: """
+    mkdir -p {params.outdir}
+    cd {params.outdir}
+    samtools sort -n -O bam -@ 10 {input.bam} > {output.sorted}
+    telescope bulk assign {output.sorted} \
+        --attribute transcript_id {params.gtf_file} \
+        --exp_tag {params.name}
+    """
+
