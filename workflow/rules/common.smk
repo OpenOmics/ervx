@@ -6,7 +6,7 @@ from scripts.common import (
 
 # This container defines the underlying OS for each job when using the workflow
 # with --use-conda --use-singularity
-container: config['images']['miniconda']
+#container: config['images']['miniconda']
 
 
 # Rules common to RNA-seq pipeline, irrespective if the data is single-end or paired-end

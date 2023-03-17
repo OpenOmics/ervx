@@ -905,9 +905,10 @@ rule telescope:
         outdir=join(workpath, telescope_dir),
         gtf_file = config['references']['rnaseq']['GTFFILE'],
         name = "{name}"
-    container: config['images']['telescope']
+    #container: config['images']['telescope']
     shell: """
     mkdir -p {params.outdir}
+    module load samtools telescope
     cd {params.outdir}
     samtools sort -n -O bam -@ 10 {input.bam} > {output.sorted}
     telescope bulk assign {output.sorted} \
@@ -915,4 +916,15 @@ rule telescope:
         --exp_tag {params.name}
     """
 
-
+rule merge_telescope:
+    input:
+        expand(join(workpath, telescope_dir, "{name}-TE_counts.tsv"), name=samples)
+    output:
+        join(workpath, telescope_dir, "counts_merged-TE_counts.csv")
+    params:
+        rname="pl:merge_telescope",
+        rmerger=join("workflow", "scripts", "telescope_count_merge.R")
+    shell:"""
+    module load R
+    Rscript {params.rmerger} {input}
+    """

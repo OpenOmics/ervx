@@ -132,6 +132,8 @@ rule all:
         join(workpath,"Reports","multiqc_report.html"),
         
         # Telescope Files
-        expand(join(workpath,bams_dir,"{name}.star_rg_added.sorted.by.name.dmark.bam"), name=samples)
+        expand(join(workpath,bams_dir,"{name}.star_rg_added.sorted.by.name.dmark.bam"), name=samples),
         # expand(join(workpath, "telescope", "{name}-TE_counts.tsv"),name=samples)
 
+        # Merging counts output from telescope
+        join(workpath, telescope_dir, "counts_merged-TE_counts.csv")
