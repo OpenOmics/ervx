@@ -136,4 +136,4 @@ rule all:
         # expand(join(workpath, "telescope", "{name}-TE_counts.tsv"),name=samples)
 
         # Merging counts output from telescope
-        join(workpath, telescope_dir, "counts_merged-TE_counts.csv")
+        join(workpath, telescope_dir, "counts_merged.csv")
