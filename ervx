@@ -1029,7 +1029,7 @@ def configure_build(sub_args, git_repo, output_path):
     required_resources = ['workflow', 'resources', 'config']
     _cp_r_safe_(source = git_repo, target = output_path, resources = required_resources)
     _configure(sub_args = sub_args, filename = os.path.join(output_path, 'config', 'build.yml'), git_repo = git_repo)
-    additional_bind_paths = _sym_refs(input_data = [sub_args.ref_fa, sub_args.ref_gtf], target = output_path, make_copy = True)
+    additional_bind_paths = _sym_refs(input_data = [sub_args.ref_fa, sub_args.ref_gtf, sub_args.ervs_gtf], target = output_path, make_copy = True)
 
     return additional_bind_paths
 
