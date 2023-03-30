@@ -988,8 +988,8 @@ def _configure(sub_args, filename, git_repo):
         fh.write('SMALL_GENOME: "{}"\n'.format(sub_args.small_genome))
         fh.write('TMP_DIR: "{}"\n'.format(sub_args.tmp_dir))
         fh.write('SHARED_RESOURCES: "{}"\n'.format(sub_args.shared_resources))
-        fh.write('READLENGTHS:\n')
         fh.write('TELESCOPE_ERVS_GTF: "{}"\n'.format(os.path.join(sub_args.output, os.path.basename(sub_args.ervs_gtf))))
+        fh.write('READLENGTHS:\n')
         read_lengths = ['50', '75', '100', '125', '150']
         for rl in read_lengths:
             fh.write('  - {}\n'.format(rl))
