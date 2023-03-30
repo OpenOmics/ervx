@@ -989,6 +989,7 @@ def _configure(sub_args, filename, git_repo):
         fh.write('TMP_DIR: "{}"\n'.format(sub_args.tmp_dir))
         fh.write('SHARED_RESOURCES: "{}"\n'.format(sub_args.shared_resources))
         fh.write('READLENGTHS:\n')
+        fh.write('TELESCOPE_ERVS_GTF: "{}"\n'.format(os.path.join(sub_args.output, os.path.basename(sub_args.ervs_gtf))))
         read_lengths = ['50', '75', '100', '125', '150']
         for rl in read_lengths:
             fh.write('  - {}\n'.format(rl))
@@ -1488,12 +1489,6 @@ def parsed_arguments(name, description):
         help = argparse.SUPPRESS
     )
 
-    subparser_run.add_argument(
-        '--transposable-elem-gtf',
-        required = True,
-        type = str,
-        help = argparse.SUPPRESS
-    )
     # Optional Arguments
     # Add custom help message
     subparser_run.add_argument(
@@ -1629,7 +1624,8 @@ def parsed_arguments(name, description):
                                 --ref-name REF_NAME \\
                                 --ref-gtf REF_GTF \\
                                 --gtf-ver GTF_VER \\
-                                --output OUTPUT
+                                --output OUTPUT \\
+                                --ervs-gtf ERVS_GTF
 
         {1}{2}Description:{4}
           Builds the reference files for the RNA-seek pipeline from a genomic FASTA 
@@ -1673,6 +1669,14 @@ def parsed_arguments(name, description):
                               provided working directory does not exist, it will be auto-
                               matically created.
                                 Example: --output /data/$USER/refs/GRCh38_41
+
+          --ervs-gtf ERVS_GTF   
+                              Annotation file or GTF file for the transposable elements 
+                              also known as Endogenous Retroviruses (ERVS). Such GTF files
+                              can be downloaded from the following source 
+                              http://geve.med.u-tokai.ac.jp/download/ . Typically these GTFs
+                              need to be reformatted using ./resources/clean_gtf.py . 
+                                Example: --ervs-gtf Mmus38.geve.v1.polished.gtf               
         
         {1}{2}Build options:{4}
           --shared-resources SHARED_RESOURCES  
@@ -1756,6 +1760,7 @@ def parsed_arguments(name, description):
                          --ref-gtf gencode.vM26.annotation.gtf \\
                          --gtf-ver M26 \\
                          --output /data/$USER/refs/mm39_M26 \\
+                         --ervs-gtf Mmus38.geve.v1.polished.gtf \\
                          --dry-run
 
           # Step 2A.) Build RNA-seek reference files
@@ -1763,7 +1768,8 @@ def parsed_arguments(name, description):
                          --ref-name mm39 \\
                          --ref-gtf gencode.vM26.annotation.gtf \\
                          --gtf-ver M26 \\
-                         --output /data/$USER/refs/mm39_M26
+                         --output /data/$USER/refs/mm39_M26 \\
+                         --ervs-gtf Mmus38.geve.v1.polished.gtf
 
         {2}{3}Version:{4}
           {1}
@@ -1820,6 +1826,15 @@ def parsed_arguments(name, description):
     subparser_build.add_argument(
         '--output',
         type = lambda option: os.path.abspath(os.path.expanduser(option)),
+        required = True,
+        help = argparse.SUPPRESS
+    )
+
+    # Input Reference ERVS GTF file
+    subparser_build.add_argument(
+        '--ervs-gtf',
+        # Check if the file exists and if it is readable
+        type = lambda file: permissions(parser, file, os.R_OK),
         required = True,
         help = argparse.SUPPRESS
     )

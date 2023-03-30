@@ -72,6 +72,7 @@ GTFVER=config["GTFVER"].strip().replace(' ', '')
 OUTDIR=config["OUTDIR"]
 SCRIPTSDIR=config["SCRIPTSDIR"]
 tmpdir=config["TMP_DIR"]
+TELESCOPE_ERVS_GTF=config["TELESCOPE_ERVS_GTF"]
 workdir:OUTDIR
 
 # Read in resource information,
@@ -664,6 +665,7 @@ rule jsonmaker:
     input:
         fa=REFFA,
         gtf=GTFFILE,
+        ervs_gtf=TELESCOPE_ERVS_GTF
     output:
         json="{genome}.json",
     params:
@@ -694,6 +696,7 @@ rule jsonmaker:
         refdict["references"]["rnaseq"]["RRNALIST"] = outdir+params.genome+".rRNA_interval_list"
         refdict["references"]["rnaseq"]["ORGANISM"] = wildcards.genome
         refdict["references"]["rnaseq"]["TINREF"] = outdir+"transcripts.protein_coding_only.bed12"
+        refdict["references"]["rnaseq"]["TELESCOPE_ERVS_GTF"] = input.ervs_gtf
 
         # Try to infer which Arriba reference files to add a user defined reference genome
         if 'hg19' in params.genome.lower() or \
