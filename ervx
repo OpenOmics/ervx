@@ -1253,7 +1253,7 @@ def parsed_arguments(name, description):
                               [--threads THREADS] \\
                               --input INPUT [INPUT ...] \\
                               --output OUTPUT \\
-                              --genome {{hg38_30, mm10_M21}}
+                              --genome {{mm10_70, hg38_20}}
 
         {1}{2}Description:{4}
           To run the pipeline with with your data, please provide a space seperated 
@@ -1279,15 +1279,15 @@ def parsed_arguments(name, description):
                                 it will be created automatically.
                                   Example: --output /data/$USER/RNA_hg38
     
-          --genome {{hg38_30,mm10_M21,custom.json}}
+          --genome {{custom.json, mm10_70, hg38_20}}
                                 Reference genome. This option defines the reference
-                                genome of the samples. RNA-seek does comes bundled with
+                                genome of the samples. Ervx does comes bundled with
                                 pre built reference files for human and mouse samples;
                                 however, it is worth noting that the pipeline can accept
                                 custom reference genomes created with the build sub
                                 command. Here is a list of available pre built genomes:
-                                hg38_30 or mm10_M21. hg38_30 uses the GENCODE version 30
-                                human annotation, while mm10_M21 uses GENCODE version M21
+                                mm10_70 and hg38_20. hg38_20 uses the GENCODE version 20
+                                human annotation, while mm10_70 uses ENSEMBL release 70
                                 mouse annotation. A custom reference genome created with
                                 the build sub command can also be provided. The name of
                                 this custom reference JSON file is dependent on the
@@ -1295,7 +1295,7 @@ def parsed_arguments(name, description):
                                 '--ref-name REF_NAME --gtf-ver GTF_VER', where the name
                                 of the output file uses the following naming convention:
                                 '{{REF_NAME}}_{{GTF_VER}}.json'.
-                                  Example: --genome hg38_30
+                                  Example: --genome hg38_20
 
         {1}{2}Analysis options:{4}
           --prokaryote          Prokaryotic genome alignment. Prokaryotic genomes, like
@@ -1428,8 +1428,8 @@ def parsed_arguments(name, description):
 
           # Step 2A.) Dry run pipeline with provided test data
           ./{0} run --input .tests/*.R?.fastq.gz \\
-                         --output /data/$USER/RNA_hg38 \\
-                         --genome hg38_30 \\
+                         --output /data/$USER/output \\
+                         --genome hg38_20 \\
                          --mode slurm \\
                          --dry-run
 
@@ -1437,8 +1437,8 @@ def parsed_arguments(name, description):
           # The slurm mode will submit jobs to the cluster.
           # It is recommended running ervx in this mode.
           ./{0} run --input .tests/*.R?.fastq.gz \\
-                         --output /data/$USER/RNA_hg38 \\
-                         --genome hg38_30 \\
+                         --output /data/$USER/output \\
+                         --genome hg38_20 \\
                          --mode slurm
 
         {2}{3}Version:{4}
@@ -1483,7 +1483,7 @@ def parsed_arguments(name, description):
         '--genome',
         required = True,
         type = lambda option: str(
-            genome_options(subparser_run, option, ['hg38_30', 'mm10_M21'])
+            genome_options(subparser_run, option, ['mm10_70', 'hg38_20'])
         ),
         help = argparse.SUPPRESS
     )
