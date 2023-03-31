@@ -942,7 +942,7 @@ rule telescope:
     params:
         rname="pl:telescope",
         outdir=join(workpath, telescope_dir),
-        gtf_file = config['references']['rnaseq']['GTFFILE'],
+        gtf_file = config['references']['rnaseq']['TELESCOPE_ERVS_GTF'],
         name = "{name}"
     container: config['images']['telescope']
     shell: """
