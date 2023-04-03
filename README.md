@@ -2,12 +2,12 @@
    
   <h1>ervx 🔬</h1>
   
-  **_long pipeline name_**
+  **_Endogenous Retrovirus Expression Pipeline for Human and Mouse_**
 
   [![tests](https://github.com/OpenOmics/ervx/workflows/tests/badge.svg)](https://github.com/OpenOmics/ervx/actions/workflows/main.yaml) [![docs](https://github.com/OpenOmics/ervx/workflows/docs/badge.svg)](https://github.com/OpenOmics/ervx/actions/workflows/docs.yml) [![GitHub issues](https://img.shields.io/github/issues/OpenOmics/ervx?color=brightgreen)](https://github.com/OpenOmics/ervx/issues)  [![GitHub license](https://img.shields.io/github/license/OpenOmics/ervx)](https://github.com/OpenOmics/ervx/blob/main/LICENSE) 
   
   <i>
-    This is the home of the pipeline, ervx. Its long-term goals: to accurately ...insert goal, to infer ..insert goal, and to boldly ..insert goal like no pipeline before!
+    This is the home of the pipeline, ervx. Its long-term goals: to accurately characterize endogenous retrovirus expression like no pipeline before!
   </i>
 </div>
 
@@ -20,7 +20,7 @@ The **`./ervx`** pipeline is composed several inter-related sub commands to setu
  * [<code>ervx <b>unlock</b></code>](https://openomics.github.io/ervx/usage/unlock/): Unlocks a previous runs output directory.
  * [<code>ervx <b>cache</b></code>](https://openomics.github.io/ervx/usage/cache/): Cache remote resources locally, coming soon!
 
-**ervx** is a comprehensive ...insert long description. It relies on technologies like [Singularity<sup>1</sup>](https://singularity.lbl.gov/) to maintain the highest-level of reproducibility. The pipeline consists of a series of data processing and quality-control steps orchestrated by [Snakemake<sup>2</sup>](https://snakemake.readthedocs.io/en/stable/), a flexible and scalable workflow management system, to submit jobs to a cluster.
+**ervx** is a comprehensive pipeline to characterize endogenous retrovirus expression in human and mouse samples. It relies on technologies like [Singularity<sup>1</sup>](https://singularity.lbl.gov/) to maintain the highest-level of reproducibility. The pipeline consists of a series of data processing and quality-control steps orchestrated by [Snakemake<sup>2</sup>](https://snakemake.readthedocs.io/en/stable/), a flexible and scalable workflow management system, to submit jobs to a cluster.
 
 The pipeline is compatible with data generated from Illumina short-read sequencing technologies. As input, it accepts a set of FastQ files and can be run locally on a compute instance or on-premise using a cluster. A user can define the method or mode of execution. The pipeline can submit jobs to a cluster using a job scheduler like SLURM (more coming soon!). A hybrid approach ensures the pipeline is accessible to all users.
 
@@ -31,7 +31,7 @@ For more information about issues or trouble-shooting a problem, please checkout
 ## Dependencies
 **Requires:** `singularity>=3.5`  `snakemake>=6.0`
 
-At the current moment, the pipeline uses a mixture of enviroment modules and docker images; however, this will be changing soon! In the very near future, the pipeline will only use docker images. With that being said, [snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) and [singularity](https://singularity.lbl.gov/all-releases) must be installed on the target system. Snakemake orchestrates the execution of each step in the pipeline. To guarantee the highest level of reproducibility, each step of the pipeline will rely on versioned images from [DockerHub](https://hub.docker.com/orgs/nciccbr/repositories). Snakemake uses singularity to pull these images onto the local filesystem prior to job execution, and as so, snakemake and singularity will be the only two dependencies in the future.
+At the current moment, the pipeline uses docker images for every step in the pipeline! With that being said, [snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) and [singularity](https://singularity.lbl.gov/all-releases) must be installed on the target system. Snakemake orchestrates the execution of each step in the pipeline. To guarantee the highest level of reproducibility, each step of the pipeline will rely on versioned images from [DockerHub](https://hub.docker.com/orgs/nciccbr/repositories). Snakemake uses singularity to pull these images onto the local filesystem prior to job execution, and as so, snakemake and singularity will be the only two dependencies in the future.
 
 ## Installation
 Please clone this repository to your local filesystem using the following command:
