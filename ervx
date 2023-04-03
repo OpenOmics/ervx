@@ -989,6 +989,7 @@ def _configure(sub_args, filename, git_repo):
         fh.write('TMP_DIR: "{}"\n'.format(sub_args.tmp_dir))
         fh.write('SHARED_RESOURCES: "{}"\n'.format(sub_args.shared_resources))
         fh.write('TELESCOPE_ERVS_GTF: "{}"\n'.format(os.path.join(sub_args.output, os.path.basename(sub_args.ervs_gtf))))
+        fh.write('ERVS_FAMILY_ANNOTATION_TABLE: "{}"\n'.format(os.path.join(sub_args.output, os.path.basename(sub_args.ervs_fam_table))))
         fh.write('READLENGTHS:\n')
         read_lengths = ['50', '75', '100', '125', '150']
         for rl in read_lengths:
@@ -1029,7 +1030,7 @@ def configure_build(sub_args, git_repo, output_path):
     required_resources = ['workflow', 'resources', 'config']
     _cp_r_safe_(source = git_repo, target = output_path, resources = required_resources)
     _configure(sub_args = sub_args, filename = os.path.join(output_path, 'config', 'build.yml'), git_repo = git_repo)
-    additional_bind_paths = _sym_refs(input_data = [sub_args.ref_fa, sub_args.ref_gtf, sub_args.ervs_gtf], target = output_path, make_copy = True)
+    additional_bind_paths = _sym_refs(input_data = [sub_args.ref_fa, sub_args.ref_gtf, sub_args.ervs_gtf, sub_args.ervs_fam_table], target = output_path, make_copy = True)
 
     return additional_bind_paths
 
@@ -1625,7 +1626,8 @@ def parsed_arguments(name, description):
                                 --ref-gtf REF_GTF \\
                                 --gtf-ver GTF_VER \\
                                 --output OUTPUT \\
-                                --ervs-gtf ERVS_GTF
+                                --ervs-gtf ERVS_GTF \\
+                                --ervs-fam-table ERVS_FAM_TABLE
 
         {1}{2}Description:{4}
           Builds the reference files for the RNA-seek pipeline from a genomic FASTA 
@@ -1676,7 +1678,13 @@ def parsed_arguments(name, description):
                               can be downloaded from the following source 
                               http://geve.med.u-tokai.ac.jp/download/ . Typically these GTFs
                               need to be reformatted using ./resources/clean_gtf.py . 
-                                Example: --ervs-gtf Mmus38.geve.v1.polished.gtf               
+                                Example: --ervs-gtf Mmus38.geve.v1.polished.gtf
+          
+          --ervs-fam-table ERVS_FAM_TABLE 
+                              Annotation TXT file for transposable elements. This file is used
+                              after telescope rule to assign family to ervs and downloaded 
+                              from http://geve.med.u-tokai.ac.jp/download/ .
+                                Example: --ervs-fam-table Mmus38.txt                                  
         
         {1}{2}Build options:{4}
           --shared-resources SHARED_RESOURCES  
@@ -1755,21 +1763,24 @@ def parsed_arguments(name, description):
           module load singularity snakemake
 
           # Step 2B.) Dry-run the build pipeline
-          ervx build --ref-fa GRCm39.primary_assembly.genome.fa \\
-                         --ref-name mm39 \\
-                         --ref-gtf gencode.vM26.annotation.gtf \\
-                         --gtf-ver M26 \\
-                         --output /data/$USER/refs/mm39_M26 \\
+          ervx build --ref-fa Mus_musculus.GRCm38.70.dna.primary_assembly_with_patches.fa \\
+                         --ref-name mm10 \\
+                         --ref-gtf Mus_musculus.GRCm38.70.polished.gtf \\
+                         --gtf-ver 70 \\
+                         --output /data/$USER/refs/mm10_70 \\
                          --ervs-gtf Mmus38.geve.v1.polished.gtf \\
+                         --ervs-fam-table Mmus38.txt \\
                          --dry-run
 
           # Step 2A.) Build RNA-seek reference files
-          ervx build --ref-fa GRCm39.primary_assembly.genome.fa \\
-                         --ref-name mm39 \\
-                         --ref-gtf gencode.vM26.annotation.gtf \\
-                         --gtf-ver M26 \\
-                         --output /data/$USER/refs/mm39_M26 \\
-                         --ervs-gtf Mmus38.geve.v1.polished.gtf
+          ervx build --ref-fa Mus_musculus.GRCm38.70.dna.primary_assembly_with_patches.fa \\
+                         --ref-name mm10 \\
+                         --ref-gtf Mus_musculus.GRCm38.70.polished.gtf \\
+                         --gtf-ver 70 \\
+                         --output /data/$USER/refs/mm10_70 \\
+                         --ervs-gtf Mmus38.geve.v1.polished.gtf \\
+                         --ervs-fam-table Mmus38.txt
+                         
 
         {2}{3}Version:{4}
           {1}
@@ -1833,6 +1844,15 @@ def parsed_arguments(name, description):
     # Input Reference ERVS GTF file
     subparser_build.add_argument(
         '--ervs-gtf',
+        # Check if the file exists and if it is readable
+        type = lambda file: permissions(parser, file, os.R_OK),
+        required = True,
+        help = argparse.SUPPRESS
+    )
+
+    # Input Reference ERVS Annotation file (txt)
+    subparser_build.add_argument(
+        '--ervs-fam-table',
         # Check if the file exists and if it is readable
         type = lambda file: permissions(parser, file, os.R_OK),
         required = True,
