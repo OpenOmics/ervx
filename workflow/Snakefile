@@ -138,4 +138,5 @@ rule all:
         expand(join(workpath,bams_dir,"{name}.star_rg_added.sorted.by.name.dmark.bam"), name=samples),
 
         # Merging counts output from telescope
-        join(workpath, telescope_dir, "counts_merged.csv")
+        join(workpath, telescope_dir, "counts.csv"),
+        join(workpath, telescope_dir, "counts_summed_by_family.csv")

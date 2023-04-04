@@ -958,11 +958,13 @@ rule merge_telescope:
     input:
         expand(join(workpath, telescope_dir, "{name}-TE_counts.tsv"), name=samples)
     output:
-        join(workpath, telescope_dir, "counts_merged.csv")
+        counts=join(workpath, telescope_dir, "counts.csv"),
+        counts_by_family=join(workpath, telescope_dir, "counts_summed_by_family.csv")
     params:
         rname="pl:merge_telescope",
-        rmerger=join("workflow", "scripts", "telescope_count_merge.R")
+        rmerger=join("workflow", "scripts", "telescope_count_merge.R"),
+        ervs_fam_table=config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE']
     shell:"""
-    module load R
-    Rscript {params.rmerger} {input}
+    module load R/4.1
+    Rscript {params.rmerger} {input} {params.ervs_fam_table}
     """
