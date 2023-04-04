@@ -18,6 +18,7 @@
             "ORGANISM": "mm10_70",
             "TINREF": "/data/OpenOmics/references/ervx/mm10_70/transcripts.protein_coding_only.bed12",
             "TELESCOPE_ERVS_GTF": "/data/OpenOmics/references/ervx/mm10_70/Mmus38.geve.v1.polished.gtf",
+            "ERVS_FAMILY_ANNOTATION_TABLE": "/data/OpenOmics/references/ervx/mm10_70/Mmus38.csv",
             "FUSIONBLACKLIST": "s3://nciccbr/Resources/RNA-seq/arriba/blacklist_mm10_GRCm38_v2.0.0.tsv.gz",
             "FUSIONCYTOBAND": "s3://nciccbr/Resources/RNA-seq/arriba/cytobands_mm10_GRCm38_v2.0.0.tsv",
             "FUSIONPROTDOMAIN": "s3://nciccbr/Resources/RNA-seq/arriba/protein_domains_mm10_GRCm38_v2.0.0.gff3"
