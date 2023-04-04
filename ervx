@@ -1681,10 +1681,10 @@ def parsed_arguments(name, description):
                                 Example: --ervs-gtf Mmus38.geve.v1.polished.gtf
           
           --ervs-fam-table ERVS_FAM_TABLE 
-                              Annotation TXT file for transposable elements. This file is used
-                              after telescope rule to assign family to ervs and downloaded 
+                              Annotation CSV file for transposable elements. This file is used
+                              in the telescope rule to assign family to ervs, and was downloaded 
                               from http://geve.med.u-tokai.ac.jp/download/ .
-                                Example: --ervs-fam-table Mmus38.txt                                  
+                                Example: --ervs-fam-table Mmus38.csv                                  
         
         {1}{2}Build options:{4}
           --shared-resources SHARED_RESOURCES  
@@ -1769,7 +1769,7 @@ def parsed_arguments(name, description):
                          --gtf-ver 70 \\
                          --output /data/$USER/refs/mm10_70 \\
                          --ervs-gtf Mmus38.geve.v1.polished.gtf \\
-                         --ervs-fam-table Mmus38.txt \\
+                         --ervs-fam-table Mmus38.csv \\
                          --dry-run
 
           # Step 2A.) Build RNA-seek reference files
@@ -1779,7 +1779,7 @@ def parsed_arguments(name, description):
                          --gtf-ver 70 \\
                          --output /data/$USER/refs/mm10_70 \\
                          --ervs-gtf Mmus38.geve.v1.polished.gtf \\
-                         --ervs-fam-table Mmus38.txt
+                         --ervs-fam-table Mmus38.csv
                          
 
         {2}{3}Version:{4}
