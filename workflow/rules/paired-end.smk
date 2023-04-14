@@ -24,7 +24,7 @@ rule validator:
         out2=join(workpath,"rawQC","{name}.validated.R2.fastq.log"),
     priority: 2
     params:
-        rname='pl:validator',
+        rname='pl_validator',
         outdir=join(workpath,"rawQC"),
     container: config['images']['fastqvalidator']
     shell: """
@@ -52,7 +52,7 @@ rule rawfastqc:
         join(workpath,"rawQC","{name}.R2_fastqc.zip"),
     priority: 2
     params:
-        rname='pl:rawfastqc',
+        rname='pl_rawfastqc',
         outdir=join(workpath,"rawQC"),
     threads: int(allocated("threads", "rawfastqc", cluster)),
     envmodules: config['bin'][pfamily]['tool_versions']['FASTQCVER']
@@ -81,7 +81,7 @@ rule trim_pe:
         out1=join(workpath,trim_dir,"{name}.R1.trim.fastq.gz"),
         out2=join(workpath,trim_dir,"{name}.R2.trim.fastq.gz")
     params:
-        rname='pl:trim_pe',
+        rname='pl_trim_pe',
         # Exposed Parameters: modify config/templates/tools.json to change defaults
         fastawithadaptersetd=config['bin'][pfamily]['tool_parameters']['FASTAWITHADAPTERSETD'],
         leadingquality=config['bin'][pfamily]['tool_parameters']['LEADINGQUALITY'],
@@ -117,7 +117,7 @@ rule fastqc:
         join(workpath,"QC","{name}.R2.trim_fastqc.zip"),
     priority: 2
     params:
-        rname='pl:fastqc',
+        rname='pl_fastqc',
         outdir=join(workpath,"QC"),
         getrl=join("workflow", "scripts", "get_read_length.py"),
     threads: int(allocated("threads", "fastqc", cluster)),
@@ -145,7 +145,7 @@ rule bbmerge:
         join(workpath,"QC","{name}_insert_sizes.txt"),
     priority: 2
     params:
-        rname='pl:bbmerge',
+        rname='pl_bbmerge',
         encoding=join("workflow", "scripts", "phred_encoding.py"),
         memory=allocated("mem", "bbmerge", cluster).lower().rstrip('g'),
     threads: int(allocated("threads", "bbmerge", cluster)),
@@ -185,7 +185,7 @@ rule fastq_screen:
         out7=join(workpath,"FQscreen2","{name}.R2.trim_screen.txt"),
         out8=join(workpath,"FQscreen2","{name}.R2.trim_screen.png")
     params:
-        rname='pl:fqscreen',
+        rname='pl_fqscreen',
         outdir = join(workpath,"FQscreen"),
         outdir2 = join(workpath,"FQscreen2"),
         # Exposed Parameters: modify resources/fastq_screen{_2}.conf to change defaults
@@ -228,7 +228,7 @@ rule kraken_pe:
         krakentaxa = join(workpath,kraken_dir,"{name}.trim.kraken_bacteria.taxa.txt"),
         kronahtml = join(workpath,kraken_dir,"{name}.trim.kraken_bacteria.krona.html"),
     params:
-        rname='pl:kraken',
+        rname='pl_kraken',
         outdir=join(workpath,kraken_dir),
         bacdb=config['bin'][pfamily]['tool_parameters']['KRAKENBACDB'],
         tmpdir=tmpdir,
@@ -289,7 +289,7 @@ if config['options']['star_2_pass_basic'] or config['options']['prokaryote']:
             out4=join(workpath,star_dir,"{name}.p2.SJ.out.tab"),
             out5=join(workpath,log_dir,"{name}.p2.Log.final.out"),
         params:
-            rname='pl:star_basic',
+            rname='pl_star_basic',
             prefix=join(workpath, star_dir, "{name}.p2"),
             best_rl_script=join("workflow", "scripts", "optimal_read_length.py"),
             # Exposed Parameters: modify config/genomes/{genome}.json to change default
@@ -406,7 +406,7 @@ else:
             out1= join(workpath,star_dir,"{name}.SJ.out.tab"),
             out3= temp(join(workpath,star_dir,"{name}.Aligned.out.bam")),
         params:
-            rname='pl:star1p',
+            rname='pl_star1p',
             prefix=join(workpath, star_dir, "{name}"),
             best_rl_script=join("workflow", "scripts", "optimal_read_length.py"),
             # Exposed Parameters: modify config/genomes/{genome}.json to change default
@@ -488,7 +488,7 @@ else:
         output:
             out1=join(workpath,star_dir,"uniq.filtered.SJ.out.tab")
         params:
-            rname='pl:sjdb'
+            rname='pl_sjdb'
         shell: """
         cat {input.files} | \
             sort | \
@@ -523,7 +523,7 @@ else:
             out4=join(workpath,star_dir,"{name}.p2.SJ.out.tab"),
             out5=join(workpath,log_dir,"{name}.p2.Log.final.out"),
         params:
-            rname='pl:star2p',
+            rname='pl_star2p',
             prefix=join(workpath, star_dir, "{name}.p2"),
             best_rl_script=join("workflow", "scripts", "optimal_read_length.py"),
             # Exposed Parameters: modify config/genomes/{genome}.json to change default
@@ -638,7 +638,7 @@ if references(config, pfamily, ['FUSIONBLACKLIST', 'FUSIONCYTOBAND', 'FUSIONPROT
             bam=join(workpath,"fusions","{name}.p2.arriba.Aligned.sortedByCoord.out.bam"),
             bai=join(workpath,"fusions","{name}.p2.arriba.Aligned.sortedByCoord.out.bam.bai"),
         params:
-            rname='pl:arriba',
+            rname='pl_arriba',
             prefix=join(workpath, "fusions", "{name}.p2"),
             # Exposed Parameters: modify config/genomes/{genome}.json to change default
             chimericbam="{name}.p2.arriba.Aligned.out.bam",
@@ -737,7 +737,7 @@ rule rsem:
         out1=join(workpath,degall_dir,"{name}.RSEM.genes.results"),
         out2=join(workpath,degall_dir,"{name}.RSEM.isoforms.results"),
     params:
-        rname='pl:rsem',
+        rname='pl_rsem',
         prefix=join(workpath,degall_dir,"{name}.RSEM"),
         rsemref=config['references'][pfamily]['RSEMREF'],
         annotate=config['references'][pfamily]['ANNOTATE'],
@@ -780,7 +780,7 @@ rule inner_distance:
     params:
         prefix=join(workpath,rseqc_dir,"{name}"),
         genemodel=config['references'][pfamily]['BEDREF'],
-        rname="pl:inner_distance",
+        rname="pl_inner_distance",
     envmodules: config['bin'][pfamily]['tool_versions']['RSEQCVER'],
     container: config['images']['rseqc']
     shell: """
@@ -805,7 +805,7 @@ rule bam2bw_rnaseq_pe:
         fbw=join(workpath,bams_dir,"{name}.fwd.bw"),
         rbw=join(workpath,bams_dir,"{name}.rev.bw")
     params:
-        rname='pl:bam2bw',
+        rname='pl_bam2bw',
         outprefix=join(workpath,bams_dir,"{name}"),
         bashscript=join("workflow", "scripts", "bam2strandedbw.pe.sh")
     threads: int(allocated("threads", "bam2bw_rnaseq_pe", cluster)),
@@ -859,7 +859,7 @@ rule rnaseq_multiqc:
         medtins=join(workpath,"Reports","multiqc_data", "rseqc_median_tin.txt"),
         fclanes=join(workpath,"Reports","multiqc_data", "fastq_flowcell_lanes.txt"),
     params:
-        rname="pl:multiqc",
+        rname="pl_multiqc",
         workdir=join(workpath),
         outdir=join(workpath,"Reports"),
         logfiles=join(workpath,"Reports","multiqc_data","*.txt"),
@@ -915,7 +915,7 @@ rule rna_report:
     output:
         html=join(workpath,"Reports","RNA_Report.html")
     params:
-        rname='pl:rna_report',
+        rname='pl_rna_report',
         rwrapper=join("workflow", "scripts", "rNA.R"),
         rmarkdown=join("workflow", "scripts", "rNA_flowcells.Rmd"),
         odir=join(workpath,"Reports"),
@@ -940,7 +940,7 @@ rule telescope:
         sorted=join(workpath,bams_dir,"{name}.star_rg_added.sorted.by.name.dmark.bam"),
         tlscp=join(workpath, telescope_dir, "{name}-TE_counts.tsv")
     params:
-        rname="pl:telescope",
+        rname="pl_telescope",
         outdir=join(workpath, telescope_dir),
         gtf_file = config['references']['rnaseq']['TELESCOPE_ERVS_GTF'],
         name = "{name}"
@@ -961,7 +961,7 @@ rule merge_telescope:
         counts=join(workpath, telescope_dir, "counts.csv"),
         counts_by_family=join(workpath, telescope_dir, "counts_summed_by_family.csv")
     params:
-        rname="pl:merge_telescope",
+        rname="pl_merge_telescope",
         rmerger=join("workflow", "scripts", "telescope_count_merge.R"),
         ervs_fam_table=config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE']
     shell:"""

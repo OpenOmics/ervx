@@ -29,7 +29,7 @@ rule fc_lane:
     output:
         fqinfo=join(workpath,"rawQC","{name}.fastq.info.txt")
     params:
-        rname='pl:fc_lane',
+        rname='pl_fc_lane',
         get_flowcell_lanes=join("workflow", "scripts", "get_flowcell_lanes.py"),
     envmodules: config['bin'][pfamily]['tool_versions']['PYTHONVER']
     container: config['images']['python']
@@ -53,7 +53,7 @@ rule picard:
         bai=join(workpath,bams_dir,"{name}.star_rg_added.sorted.dmark.bam.bai"),
         metrics=join(workpath,log_dir,"{name}.star.duplic")
     params:
-        rname='pl:picard',
+        rname='pl_picard',
         sampleName="{name}",
         memory=allocated("mem", "picard", cluster).lower().rstrip('g'),
         tmpdir = tmpdir,
@@ -97,7 +97,7 @@ rule preseq:
     output:
         ccurve = join(workpath,preseq_dir,"{name}.ccurve"),
     params:
-        rname = "pl:preseq",
+        rname = "pl_preseq",
     envmodules: config['bin'][pfamily]['tool_versions']['PRESEQVER'],
     container: config['images']['preseq']
     shell:"""
@@ -120,7 +120,7 @@ rule qualibam:
         report=join(workpath,"QualiMap","{name}","qualimapReport.html"),
         results=join(workpath,"QualiMap","{name}","genome_results.txt"),
     params:
-        rname='pl:qualibam',
+        rname='pl_qualibam',
         outdir=join(workpath,"QualiMap","{name}"),
         gtfFile=config['references'][pfamily]['GTFFILE'],
         memory=int(allocated("mem", "qualibam", cluster).lower().rstrip('g'))-1,
@@ -153,7 +153,7 @@ rule stats:
         outstar1=join(workpath,log_dir,"{name}.RnaSeqMetrics.txt"),
         outstar2=join(workpath,log_dir,"{name}.flagstat.concord.txt"),
     params:
-        rname='pl:stats',
+        rname='pl_stats',
         refflat=config['references'][pfamily]['REFFLAT'],
         rrnalist=config['references'][pfamily]['RRNALIST'],
         picardstrand=config['bin'][pfamily]['PICARDSTRAND'],
@@ -201,7 +201,7 @@ rule rsem_merge:
         isoform_fpkm_matrix=join(workpath,degall_dir,"RSEM.isoforms.FPKM.all_samples.txt"),
         reformatted=join(workpath,degall_dir,"RSEM_genes_expected_counts.tsv"),
     params:
-        rname='pl:rsem_merge',
+        rname='pl_rsem_merge',
         annotate=config['references'][pfamily]['ANNOTATE'],
         pythonscript=join("workflow", "scripts", "merge_rsem_results.py"),
         inputdir=join(workpath, degall_dir)
@@ -230,7 +230,7 @@ rule rseqc:
         out2=join(workpath,rseqc_dir,"{name}.Rdist.info")
     params:
         bedref=config['references'][pfamily]['BEDREF'],
-        rname="pl:rseqc",
+        rname="pl_rseqc",
     envmodules: config['bin'][pfamily]['tool_versions']['RSEQCVER'],
     container: config['images']['rseqc']
     shell: """
@@ -260,7 +260,7 @@ rule tin:
     params:
         bedref=config['references'][pfamily]['TINREF'],
         outdir=join(workpath,rseqc_dir),
-        rname="pl:tin",
+        rname="pl_tin",
     envmodules: config['bin'][pfamily]['tool_versions']['RSEQCVER'],
     container: config['images']['rseqc']
     shell: """
@@ -284,7 +284,7 @@ rule tin_merge:
     output:
         matrix=join(workpath,degall_dir,"combined_TIN.tsv")
     params:
-        rname="pl:tin_merge",
+        rname="pl_tin_merge",
         create_matrix=join("workflow", "scripts", "create_tin_matrix.py")
     envmodules: config['bin'][pfamily]['tool_versions']['PYTHONVER'],
     container: config['images']['python']

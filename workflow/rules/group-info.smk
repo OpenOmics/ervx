@@ -7,7 +7,7 @@ rule samplecondition:
     output:
         out1=join(workpath,star_dir,"sampletable.txt")
     params:
-        rname='pl:samplecondition',
+        rname='pl_samplecondition',
         pathprefix=join(workpath,star_dir),
         groups=config['project']['groups']['rgroups'],
         labels=config['project']['groups']['rlabels'],
@@ -33,7 +33,7 @@ rule rsemcounts:
     output:
         join(workpath,degall_dir,"RawCountFile_RSEM_genes_filtered.txt"),
     params:
-        rname='pl:rsemcounts',
+        rname='pl_rsemcounts',
         outdir=join(workpath,degall_dir),
         annotate=config['references'][pfamily]['ANNOTATE'],
         rver=config['bin'][pfamily]['tool_versions']['RVER'],
@@ -52,7 +52,7 @@ rule pca:
     output:
         outhtml=join(workpath,degall_dir,"PcaReport_{dtype}.html")
     params:
-        rname='pl:pca',
+        rname='pl_pca',
         outdir=join(workpath,degall_dir),
         dtype="{dtype}",
         projectId=config['project']['id'],

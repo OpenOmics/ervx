@@ -159,7 +159,7 @@ rule rsem:
     output:
         join("rsemref","{genome}.transcripts.ump"),
     params:
-        rname='bl:rsem',
+        rname='bl_rsem',
         genome=GENOME,
         prefix=join("rsemref", GENOME),
     threads: int(allocated("threads", "rsem", cluster)),
@@ -191,7 +191,7 @@ rule annotate:
         "genes.ref.bed",
         "geneinfo.bed",
     params:
-        rname='bl:annotate',
+        rname='bl_annotate',
         get_gene=join(SCRIPTSDIR, "get_gene_annotate.py"),
         get_isoform=join(SCRIPTSDIR, "get_isoform_annotate.py"),
         make_refFlat=join(SCRIPTSDIR, "make_refFlat.py"),
@@ -230,7 +230,7 @@ rule star_rl:
     output:
         join("STAR", "2.7.6a", "genes-{readlength}", "SA"),
     params:
-        rname='bl:star_rl',
+        rname='bl_star_rl',
         tmpdir=tmpdir,
     threads: int(allocated("threads", "star_rl", cluster)),
     container: config['images']['arriba']
@@ -295,7 +295,7 @@ if SMALL_GENOME == "True":
         output:
             join("STAR", "2.7.6a", "genome", "SA"),
         params:
-            rname='bl:star_genome',
+            rname='bl_star_genome',
             tmpdir=tmpdir,
         threads: int(allocated("threads", "star_genome", cluster)),
         container: config['images']['arriba']
@@ -351,7 +351,7 @@ else:
         output:
             join("STAR", "2.7.6a", "genome", "SA")
         params:
-            rname='bl:star_genome',
+            rname='bl_star_genome',
             tmpdir=tmpdir,
         threads: int(allocated("threads", "star_genome", cluster)),
         container: config['images']['arriba']
@@ -392,7 +392,7 @@ rule rRNA_list:
     output:
         "{genome}.rRNA_interval_list",
     params:
-        rname='bl:rRNA_list',
+        rname='bl_rRNA_list',
         genome=GENOME,
         create_rRNA=join(SCRIPTSDIR, "create_rRNA_intervals.py"),
     container: config['images']['build_rnaseq']
@@ -417,7 +417,7 @@ rule karyo_coord:
     output:
         "karyoplot_gene_coordinates.txt",
     params:
-        rname='bl:karyo_coord',
+        rname='bl_karyo_coord',
         get_karyoplot=join(SCRIPTSDIR, "get_karyoplot_gene_coordinates.py"),
     container: config['images']['build_rnaseq']
     shell: """
@@ -438,7 +438,7 @@ rule karyo_beds:
     output:
         join("karyobeds", "karyobed.bed"),
     params:
-        rname='bl:karyo_bed',
+        rname='bl_karyo_bed',
         get_karyoplot=join(SCRIPTSDIR, "get_karyoplot_beds.py"),
     container: config['images']['build_rnaseq']
     shell: """
@@ -460,7 +460,7 @@ rule tin_ref:
     output:
         "transcripts.protein_coding_only.bed12",
     params:
-        rname='bl:tin_ref',
+        rname='bl_tin_ref',
         gtf2protein=join(SCRIPTSDIR, "gtf2protein_coding_genes.py"),
         gene2transcripts=join(SCRIPTSDIR, "gene2transcripts_add_length.py"),
     container: config['images']['build_rnaseq']
@@ -512,7 +512,7 @@ rule qualimapinfo:
     output:
         "qualimap_info.txt",
     params:
-        rname='bl:qualimapinfo',
+        rname='bl_qualimapinfo',
         generate_qualimap=join(SCRIPTSDIR, "generate_qualimap_ref.py"),
     container: config['images']['build_rnaseq']
     shell: """
@@ -549,7 +549,7 @@ rule fqscreen_db1:
             ext=["1", "2"]
         ),
     params:
-        rname='bl:fqscreen_db1',
+        rname='bl_fqscreen_db1',
         tarname=join("fastq_screen_db.{genome}.tar"),
         tarfile=join(SHARED_PATH, "fastq_screen_db.{genome}.tar"),
         outdir=SHARED_PATH,
@@ -585,7 +585,7 @@ rule fqscreen_db2:
             ext=["1", "2"]
         ),
     params:
-        rname='bl:fqscreen_db2',
+        rname='bl_fqscreen_db2',
         tarname=join("fastq_screen_db.{genome}.tar"),
         tarfile=join(SHARED_PATH, "fastq_screen_db.{genome}.tar"),
         outdir=SHARED_PATH,
@@ -612,7 +612,7 @@ rule fqscreen_conf:
         conf1=join(SHARED_PATH, "fastq_screen_db", "fastq_screen_p1.conf"),
         conf2=join(SHARED_PATH, "fastq_screen_db", "fastq_screen_p2.conf"),
     params:
-        rname='bl:fqscreen_conf',
+        rname='bl_fqscreen_conf',
         conf1="fastq_screen_p1.conf",
         conf2="fastq_screen_p2.conf",
         new=join(SHARED_PATH).rstrip('/'),
@@ -642,7 +642,7 @@ rule kraken2_db:
     output:
         expand(join(SHARED_PATH, "20180907_standard_kraken2", "{ref}.k2d"), ref=["hash", "opts", "taxo"]),
     params:
-        rname='bl:kraken2_db',
+        rname='bl_kraken2_db',
         outfh=join(SHARED_PATH, "20180907_standard_kraken2.tar"),
         tarfile="20180907_standard_kraken2.tar",
         outdir=SHARED_PATH,
@@ -671,7 +671,7 @@ rule jsonmaker:
     output:
         json="{genome}.json",
     params:
-        rname='bl:jsonmaker',
+        rname='bl_jsonmaker',
         workdir=OUTDIR,
         genome=GENOME,
     run:
