@@ -74,6 +74,7 @@ SCRIPTSDIR=config["SCRIPTSDIR"]
 tmpdir=config["TMP_DIR"]
 TELESCOPE_ERVS_GTF=config["TELESCOPE_ERVS_GTF"]
 ERVS_FAMILY_ANNOTATION_TABLE=config["ERVS_FAMILY_ANNOTATION_TABLE"]
+MODE=config["MODE"]
 workdir:OUTDIR
 
 # Read in resource information,
@@ -81,8 +82,15 @@ workdir:OUTDIR
 # threads, mem, walltimes, etc.
 # TODO: Add handler for when the
 # mode is set to local.
-with open(join(OUTDIR, 'resources', 'build_cluster.json')) as fh:
-    cluster = json.load(fh)
+if MODE == 'slurm':
+    with open(join(OUTDIR, 'resources', 'build_cluster_slurm.json')) as fh:
+        cluster = json.load(fh)
+elif MODE == 'uge':
+    with open(join(OUTDIR, 'resources', 'build_cluster_uge.json')) as fh:
+        cluster = json.load(fh)
+else:
+    with open(join(OUTDIR, 'resources', 'build_cluster_slurm.json')) as fh:
+        cluster = json.load(fh)
 
 # Ensures backwards compatibility 
 try:

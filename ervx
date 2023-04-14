@@ -675,8 +675,8 @@ def dryrun(outdir, config='config.json', snakefile=os.path.join('workflow', 'Sna
 
 def orchestrate(
         mode, outdir, additional_bind_paths, alt_cache, threads=2, 
-        submission_script='runner', masterjob='pl:ervx', 
-        tmp_dir = '/lscratch/$SLURM_JOBID/'
+        submission_script='runner', masterjob='pl_ervx', 
+        tmp_dir = '/tmp/$USER/'
     ):
     """Runs RNA-seek pipeline via selected executor: local or slurm.
     If 'local' is selected, the pipeline is executed locally on a compute node/instance.
@@ -763,7 +763,7 @@ def orchestrate(
             ], cwd = outdir, env=my_env)
 
     # Submitting jobs to cluster via SLURM's job scheduler
-    elif mode == 'slurm':
+    elif mode in ['slurm', 'uge']: 
         # Run RNA-seek: instantiate main/master process
         # Look into later: it maybe worth replacing Popen subprocess with a direct
         # snakemake API call: https://snakemake.readthedocs.io/en/stable/api_reference/snakemake.html
@@ -990,6 +990,7 @@ def _configure(sub_args, filename, git_repo):
         fh.write('SHARED_RESOURCES: "{}"\n'.format(sub_args.shared_resources))
         fh.write('TELESCOPE_ERVS_GTF: "{}"\n'.format(os.path.join(sub_args.output, os.path.basename(sub_args.ervs_gtf))))
         fh.write('ERVS_FAMILY_ANNOTATION_TABLE: "{}"\n'.format(os.path.join(sub_args.output, os.path.basename(sub_args.ervs_fam_table))))
+        fh.write('MODE: "{}"\n'.format(sub_args.mode))
         fh.write('READLENGTHS:\n')
         read_lengths = ['50', '75', '100', '125', '150']
         for rl in read_lengths:
@@ -1083,12 +1084,12 @@ def build(sub_args):
     
     # Run RNA-seek reference building pipeline
     masterjob = orchestrate(
-        mode = 'slurm', 
+        mode = sub_args.mode, 
         outdir = output_path,
         additional_bind_paths = additional_bind_paths, 
         alt_cache = sub_args.singularity_cache,
         submission_script = 'builder', 
-        masterjob = 'pl:build',
+        masterjob = 'pl_build',
         tmp_dir = sub_args.tmp_dir
     )
 
@@ -1097,13 +1098,13 @@ def build(sub_args):
     # Relay information about submission
     # of the master job or the exit code of the 
     # pipeline that ran in local mode
-    sub_args.mode = 'slurm'
+    
     if sub_args.mode == 'local':
         if int(masterjob.returncode) == 0:
             print('{} pipeline has successfully completed'.format(_name))
         else:
             fatal('{} pipeline failed. Please see standard output for more information.')
-    elif sub_args.mode == 'slurm':
+    elif sub_args.mode in ['slurm', 'uge']:
         jobid = open(os.path.join(sub_args.output, 'logfiles', 'bjobid.log')).read().strip()
         if int(masterjob.returncode) == 0:
             print('Successfully submitted master job: ', end="")
@@ -1160,7 +1161,7 @@ def cache(sub_args):
             # Quote user provided values to avoid shell injections
             username = os.environ.get('USER', os.environ.get('USERNAME'))
             masterjob = subprocess.Popen(
-                'sbatch --parsable -J pl:cache --time=10:00:00 --mail-type=BEGIN,END,FAIL ' +
+                'sbatch --parsable -J pl_cache --time=10:00:00 --mail-type=BEGIN,END,FAIL ' +
                 str(os.path.join(repo_path, 'resources', 'cacher')) + ' slurm ' +
                 " -s '{}' ".format(sif_cache) +
                 " -i '{}' ".format(','.join(pull)) + 
@@ -1856,6 +1857,17 @@ def parsed_arguments(name, description):
         # Check if the file exists and if it is readable
         type = lambda file: permissions(parser, file, os.R_OK),
         required = True,
+        help = argparse.SUPPRESS
+    )
+
+    # Execution Method, run locally 
+    # on a compute node or submit to 
+    # a supported job scheduler, etc.
+    subparser_build.add_argument(
+        '--mode',
+        type = str,
+        required = True,
+        choices = ['slurm', 'uge', 'local'],
         help = argparse.SUPPRESS
     )
 

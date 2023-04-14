@@ -1,0 +1,22 @@
+{
+    "__default__": {
+        "mem": "12G",
+        "partition": "",
+        "threads": "16"
+    },
+    "star_rl": {
+        "mem": "10G",
+        "threads": "16"
+    },
+    "star_Genome": {
+        "mem": "10G",
+        "threads": "16"
+    },
+    "rsem": {
+        "mem": "10G",
+        "threads": "16"
+    },
+    "qualimapinfo": {
+        "mem": "15G"
+    }
+}
