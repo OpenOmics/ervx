@@ -1,0 +1,95 @@
+{
+	"__default__": {
+		"mem": "12G",
+		"partition": "",
+		"threads": "4"
+	},
+	"bam2bw_rnaseq_pe": {
+		"mem": "10G",
+		"threads": "4"
+	},
+	"bam2bw_rnaseq_se": {
+		"mem": "20G",
+		"threads": "2"
+	},
+	"bbmerge": {
+		"mem": "10G",
+		"threads": "16"
+	},
+	"fastqc": {
+		"mem": "10G",
+		"threads": "16"
+	},
+	"fastq_screen": {
+		"mem": "10G",
+		"threads": "16"
+	},
+	"kraken_pe": {
+		"threads": "16",
+		"mem": "9G"
+	},
+	"kraken_se": {
+		"threads": "16",
+		"mem": "9G"
+	},
+	"pca": {
+		"mem": "10G",
+		"threads": "16"
+	},
+	"picard": {
+		"mem": "10G",
+		"threads": "16"
+	},
+	"preseq": {
+		"mem": "15G",
+		"threads": "16"
+	},
+	"qualibam": {
+		"threads": "16",
+		"mem": "10G"
+	},
+	"rawfastqc": {
+		"threads": "8"
+	},
+	"rsem": {
+		"threads": "16"
+	},
+	"star1p": {
+		"mem": "10G",
+		"threads": "16"
+	},
+	"star2p": {
+		"mem": "10G",
+		"threads": "16"
+	},
+	"star_basic": {
+		"mem": "10G",
+		"threads": "16"
+	},
+	"star_small": {
+		"mem": "10G",
+		"threads": "16"
+	},
+	"arriba": {
+		"mem": "10G",
+		"threads": "16"
+	},
+	"stats": {
+		"mem": "8G",
+		"threads": "4"
+	},
+	"subread": {
+		"threads": "16"
+	},
+	"subreadoverlap": {
+		"threads": "16"
+	},
+	"trim_pe": {
+		"mem": "10G",
+		"threads": "16"
+	},
+	"trim_se": {
+		"mem": "10G",
+		"threads": "16"
+	}
+}
