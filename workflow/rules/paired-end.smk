@@ -148,6 +148,7 @@ rule bbmerge:
         rname='pl_bbmerge',
         encoding=join("workflow", "scripts", "phred_encoding.py"),
         memory=allocated("mem", "bbmerge", cluster).lower().rstrip('g'),
+        mode=mode
     threads: int(allocated("threads", "bbmerge", cluster)),
     envmodules: config['bin'][pfamily]['tool_versions']['BBTOOLSVER']
     container: config['images']['bbtools']
