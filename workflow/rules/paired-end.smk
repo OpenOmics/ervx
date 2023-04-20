@@ -960,12 +960,19 @@ rule merge_telescope:
         expand(join(workpath, telescope_dir, "{name}-TE_counts.tsv"), name=samples)
     output:
         counts=join(workpath, telescope_dir, "counts.csv"),
-        counts_by_family=join(workpath, telescope_dir, "counts_summed_by_family.csv")
+        counts_by_subfamily=join(workpath, telescope_dir, "counts_summed_by_subfamily.csv"),
+        heatmap=join(workpath, telescope_dir, "counts_summed_by_subfamily_heatmap.jpeg")
     params:
         rname="pl_merge_telescope",
         rmerger=join("workflow", "scripts", "telescope_count_merge.R"),
+        mode=mode,
         ervs_fam_table=config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE']
     shell:"""
-    module load R/4.1
+    set +u
+    if [ "{params.mode}" == "uge" ]; then 
+        module load R
+    else
+        module load R/4.1.3
+    fi
     Rscript {params.rmerger} {input} {params.ervs_fam_table}
     """

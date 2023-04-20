@@ -34,38 +34,40 @@ print(head(counts_merged))
 
 print("DIMS counts_merged:")
 print(dim(counts_merged))
+print(paste("this is class:", class(counts_merged$Repbase)))
 write.csv(counts_merged, "telescope/counts.csv", row.names=FALSE)
 
-# Counts Summing By Family Per Sample
+# Counts Summing By Subfamily Per Sample
 for(i in seq_along(counts_merged$transcript)){
   if(is.na(counts_merged$Repbase[i])){
-    counts_merged$Family[i]="__no_feature"
+    counts_merged$Subfamily[i]="__no_feature"
+  }else if (counts_merged$Repbase[i]=="."){
+    counts_merged$Subfamily[i] <- "." 
   }else{
-    counts_merged$Family[i] <- paste(unlist(strsplit(counts_merged$Repbase[i], 
-                                         "|", fixed=T))[-1], collapse="|")
-    if(counts_merged$Family[i]==""){
-      counts_merged$Family[i]=NA
-    }
+    print(paste("this is Rebase:", i,counts_merged$Repbase[i]))
+    separated_vector <- unlist(strsplit(unlist(strsplit(as.character(counts_merged$Repbase[i]), " ", fixed=T)), "|", fixed=T))
+    counts_merged$Subfamily[i] <- paste(separated_vector[!grepl("/", separated_vector)], collapse="/")
   }
 }
 
 counts_merged$Repbase <-NULL
 counts_merged$transcript <-NULL
-counts_summed_by_family <- counts_merged %>%
-  group_by(Family) %>%
+counts_summed_by_subfamily <- counts_merged %>%
+  group_by(Subfamily) %>%
   summarise(across(everything(), sum))
-counts_summed_by_family=as.data.frame(counts_summed_by_family)
-write.csv(counts_summed_by_family,"telescope/counts_summed_by_family.csv", row.names=FALSE)
+counts_summed_by_subfamily <- as.data.frame(counts_summed_by_subfamily)
+counts_summed_by_subfamily <- counts_summed_by_subfamily[-which(counts_summed_by_subfamily$Subfamily=="."),]
+write.csv(counts_summed_by_subfamily,"telescope/counts_summed_by_subfamily.csv", row.names=FALSE)
 
-# Heatmap: Counts Summed By Family Per Sample
-counts_summed_by_family$Family[which(is.na(counts_summed_by_family$Family))] <- "Unknown"
-transposed <- melt(counts_summed_by_family)
-ggplot(transposed, aes(x = variable, y = Family, fill = value)) +
+# Heatmap: Counts Summed By Subfamily Per Sample
+counts_summed_by_subfamily$Subfamily[which(is.na(counts_summed_by_subfamily$Subfamily))] <- "Unknown"
+transposed <- melt(counts_summed_by_subfamily)
+ggplot(transposed, aes(x = variable, y = Subfamily, fill = value)) +
   geom_tile()+theme(axis.text.x = element_text(angle = 90,size=4,face="bold"),
                     axis.text.y = element_text(size=4,face="bold"),
                     plot.title = element_text())+
-  xlab("Samples")+ylab("Family")+ 
-  ggtitle("Counts Summed By Family Per Sample")
+  xlab("Samples")+ylab("Subfamily")+ 
+  ggtitle("Counts Summed By Subfamily Per Sample")
   
-ggsave("telescope/counts_summed_by_family_heatmap.jpeg",
+ggsave("telescope/counts_summed_by_subfamily_heatmap.jpeg",
        dpi=400, height=6, width=7, units="in")

@@ -81,7 +81,7 @@ rule all:
         expand(join(workpath,"QC","{name}.R2.trim_fastqc.zip"), name=samples),
 
         # BBtools Insert Size
-        expand(join(workpath,"QC","{name}_insert_sizes.txt"), name=samples),
+        #expand(join(workpath,"QC","{name}_insert_sizes.txt"), name=samples),
 
         # FastScreen (Using two sets of reference databases)
         expand(join(workpath,"FQscreen","{name}.R1.trim_screen.txt"),name=samples),
@@ -141,11 +141,12 @@ rule all:
         join(workpath,"Reports","multiqc_report.html"),
 
         # RNA QC Report
-        join(workpath,"Reports","RNA_Report.html"),
+        #join(workpath,"Reports","RNA_Report.html"),
         
         # Telescope Files
         expand(join(workpath,bams_dir,"{name}.star_rg_added.sorted.by.name.dmark.bam"), name=samples),
 
         # Merging counts output from telescope
         join(workpath, telescope_dir, "counts.csv"),
-        join(workpath, telescope_dir, "counts_summed_by_family.csv")
+        join(workpath, telescope_dir, "counts_summed_by_subfamily.csv"),
+        join(workpath, telescope_dir, "counts_summed_by_subfamily_heatmap.jpeg")
