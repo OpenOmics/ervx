@@ -48,7 +48,7 @@ module load snakemake singularity
 ./ervx -h
 ```
 
-### LOCUS
+### Locus
 Please clone this repository using the following commands:
 ```bash
 # Clone Repository from Github
@@ -61,6 +61,36 @@ module load snakemake
 cd ervx/
 # Get usage information
 ./ervx -h
+```
+
+## Run
+### Biowulf
+```bash
+module load snakemake singularity
+./ervx run \
+    --input /data/NCBR/*.fastq.gz \
+    --output /data/NCBR/project/results \
+    --genome mm10_70 \
+    --mode slurm \
+    --star-2-pass-basic \
+    --sif-cache /data/NCBR/dev/SIFs/ \
+    --dry-run
+```
+
+### Locus
+```bash
+module load snakemake
+# On Locus --mode --tmp-dir --shared-resources are required arguments.
+./ervx run \
+    --input /hpcdata/dir/NCBR/*.fastq.gz \
+    --output /hpcdata/NCBR/project/results/ \
+    --genome mm10_70 \
+    --mode uge \
+    --star-2-pass-basic \
+    --sif-cache /hpcdata/dir/NCBR-337/SIFs/ \
+    --tmp-dir /hpcdata/scratch/ \
+    --shared-resources /hpcdata/dir/NCBR-337/SHARED_RESOURCES/ \
+    --dry-run
 ```
 
 ## Contribute 
