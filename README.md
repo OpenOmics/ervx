@@ -22,7 +22,7 @@ The **`./ervx`** pipeline is composed several inter-related sub commands to setu
 
 **ervx** is a comprehensive pipeline to characterize endogenous retrovirus expression in human and mouse samples. It relies on technologies like [Singularity<sup>1</sup>](https://singularity.lbl.gov/) to maintain the highest-level of reproducibility. The pipeline consists of a series of data processing and quality-control steps orchestrated by [Snakemake<sup>2</sup>](https://snakemake.readthedocs.io/en/stable/), a flexible and scalable workflow management system, to submit jobs to a cluster.
 
-The pipeline is compatible with data generated from Illumina short-read sequencing technologies. As input, it accepts a set of FastQ files and can be run locally on a compute instance or on-premise using a cluster. A user can define the method or mode of execution. The pipeline can submit jobs to a cluster using a job scheduler like SLURM (more coming soon!). A hybrid approach ensures the pipeline is accessible to all users.
+The pipeline is compatible with data generated from Illumina short-read sequencing technologies. As input, it accepts a set of FastQ files and can be run locally on a compute instance or on-premise using a cluster. A user can define the method or mode of execution. The pipeline can submit jobs to a cluster using a job scheduler like SLURM and UGE. A hybrid approach ensures the pipeline is accessible to all users.
 
 Before getting started, we highly recommend reading through the [usage](https://openomics.github.io/ervx/usage/run/) section of each available sub command.
 
@@ -34,7 +34,8 @@ For more information about issues or trouble-shooting a problem, please checkout
 At the current moment, the pipeline uses docker images for every step in the pipeline! With that being said, [snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) and [singularity](https://singularity.lbl.gov/all-releases) must be installed on the target system. Snakemake orchestrates the execution of each step in the pipeline. To guarantee the highest level of reproducibility, each step of the pipeline will rely on versioned images from [DockerHub](https://hub.docker.com/orgs/nciccbr/repositories). Snakemake uses singularity to pull these images onto the local filesystem prior to job execution, and as so, snakemake and singularity will be the only two dependencies in the future.
 
 ## Installation
-Please clone this repository to your local filesystem using the following command:
+### Biowulf
+Please clone this repository using the following commands:
 ```bash
 # Clone Repository from Github
 git clone https://github.com/OpenOmics/ervx.git
@@ -43,6 +44,21 @@ cd ervx/
 # Add dependencies to $PATH
 # Biowulf users should run
 module load snakemake singularity
+# Get usage information
+./ervx -h
+```
+
+### LOCUS
+Please clone this repository using the following commands:
+```bash
+# Clone Repository from Github
+git clone https://github.com/OpenOmics/ervx.git
+# Add dependencies to $PATH
+# LOCUS users should run
+qrsh -l h_vmem=4G -pe threaded 4
+module load snakemake
+# Change your working directory
+cd ervx/
 # Get usage information
 ./ervx -h
 ```
