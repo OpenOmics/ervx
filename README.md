@@ -79,8 +79,11 @@ module load snakemake singularity
 
 ### Locus
 ```bash
+qrsh -l h_vmem=4G -pe threaded 4
 module load snakemake
-# On Locus --mode --tmp-dir --shared-resources are required arguments.
+# Change your working directory
+cd ervx/
+# On Locus --mode --tmp-dir --shared-resources --sif-cache are required options.
 ./ervx run \
     --input /hpcdata/dir/NCBR/*.fastq.gz \
     --output /hpcdata/NCBR/project/results/ \

@@ -10,7 +10,7 @@ Setting up the ervx pipeline is fast and easy! In its most basic form, <code>erv
 ## 2. Synopsis
 ```text
 $ ervx run [--help] \
-      [--mode {slurm,local}] [--job-name JOB_NAME] [--batch-id BATCH_ID] \
+      [--mode {slurm,uge,local}] [--job-name JOB_NAME] [--batch-id BATCH_ID] \
       [--tmp-dir TMP_DIR] [--silent] [--sif-cache SIF_CACHE] \ 
       [--singularity-cache SINGULARITY_CACHE] \
       [--dry-run] [--threads THREADS] \
@@ -53,7 +53,7 @@ Each of the following arguments are optional, and do not need to be provided.
 
 ### 2.3 Orchestration options
 
-Each of the following arguments are optional, and do not need to be provided. 
+Each of the following arguments are optional, and do not need to be provided, except that ***`--sif-cache --mode` `--tmp-dir` and `--shared-resources` are required options on Locus.***
 
   `--dry-run`            
 > **Dry run the pipeline.**  
@@ -62,6 +62,15 @@ Each of the following arguments are optional, and do not need to be provided.
 > Displays what steps in the pipeline remain or will be run. Does not execute anything!
 >
 > ***Example:*** `--dry-run`
+
+---
+  `--shared-resources SHARED_RESOURCES`  
+> **Local path to shared resources.**  
+> *type: path*
+>
+> The pipeline uses a set of shared reference files that can be re-used across reference genomes. These currently include reference files for kraken and FQScreen. These reference files can be downloaded with the build sub command's `--shared-resources`  option. With that being said, these files only need to be downloaded once. We recommend storing this files in a shared location on the filesystem that other people can access. If you are running the pipeline on Biowulf, you do NOT need to download these reference files! They already exist on the filesystem in a location that anyone can acceess; however, if you are running the pipeline on another cluster or target system, you will need to download the shared resources with the build sub command, and you will need to provide this option every time you run the pipeline. Please provide the same path that was provided to the build sub command's --shared-resources option. Again, if you are running the pipeline on Biowulf, you do NOT need to provide this option. For more information about how to download shared resources, please reference the build sub command's `--shared-resources` option. **This is a required option on Locus, shared resources are already on Locus in /hpcdata/dir/NCBR-337/SHARED_RESOURCES/.**
+> 
+> ***Example:*** `--shared-resources /hpcdata/dir/NCBR-337/SHARED_RESOURCES/`
 
 ---  
   `--silent`            
@@ -73,7 +82,7 @@ Each of the following arguments are optional, and do not need to be provided.
 > ***Example:*** `--silent`
 
 ---  
-  `--mode {slurm,local}`  
+  `--mode {slurm,uge,local}`  
 > **Execution Method.**  
 > *type: string*  
 > *default: slurm*
@@ -82,6 +91,9 @@ Each of the following arguments are optional, and do not need to be provided.
 > 
 > ***slurm***    
 > The slurm execution method will submit jobs to the [SLURM workload manager](https://slurm.schedmd.com/). It is recommended running ervx in this mode as execution will be significantly faster in a distributed environment. This is the default mode of execution.
+>
+> ***uge***    
+> The uge execution method will submit jobs to the [UGE workload manager](https://supcom.hgc.jp/english/utili_info/manual/uge.html#2694). **This option is required on Locus**.
 >
 > ***local***  
 > Local executions will run serially on compute instance. This is useful for testing, debugging, or when a users does not have access to a high performance computing environment. If this option is not provided, it will default to a local execution mode. 
@@ -113,9 +125,11 @@ Each of the following arguments are optional, and do not need to be provided.
 > **Path where a local cache of SIFs are stored.**  
 > *type: path*  
 >
-> Uses a local cache of SIFs on the filesystem. This SIF cache can be shared across users if permissions are set correctly. If a SIF does not exist in the SIF cache, the image will be pulled from Dockerhub and a warning message will be displayed. The `ervx cache` subcommand can be used to create a local SIF cache. Please see `ervx cache` for more information. This command is extremely useful for avoiding DockerHub pull rate limits. It also remove any potential errors that could occur due to network issues or DockerHub being temporarily unavailable. We recommend running ervx with this option when ever possible.
+> Uses a local cache of SIFs on the filesystem. This SIF cache can be shared across users if permissions are set correctly. If a SIF does not exist in the SIF cache, the image will be pulled from Dockerhub and a warning message will be displayed. The `ervx cache` subcommand can be used to create a local SIF cache. Please see `ervx cache` for more information. This command is extremely useful for avoiding DockerHub pull rate limits. It also remove any potential errors that could occur due to network issues or DockerHub being temporarily unavailable. We recommend running ervx with this option when ever possible. **This option is required on Locus**.
 > 
 > ***Example:*** `--singularity-cache /data/$USER/SIFs`
+
+> ***Example for Locus:*** `--singularity-cache /hpcdata/dir/NCBR-337/SIFs/`
 
 ---  
   `--threads THREADS`   
@@ -134,9 +148,11 @@ Each of the following arguments are optional, and do not need to be provided.
 > *type: path*  
 > *default: `/lscratch/$SLURM_JOBID`*
 > 
-> Path on the file system for writing temporary output files. By default, the temporary directory is set to '/lscratch/$SLURM_JOBID' for backwards compatibility with the NIH's Biowulf cluster; however, if you are running the pipeline on another cluster, this option will need to be specified. Ideally, this path should point to a dedicated location on the filesystem for writing tmp files. On many systems, this location is set to somewhere in /scratch. If you need to inject a variable into this string that should NOT be expanded, please quote this options value in single quotes.
+> Path on the file system for writing temporary output files. By default, the temporary directory is set to '/lscratch/$SLURM_JOBID' for backwards compatibility with the NIH's Biowulf cluster; however, if you are running the pipeline on another cluster, this option will need to be specified. Ideally, this path should point to a dedicated location on the filesystem for writing tmp files. On many systems, this location is set to somewhere in /scratch. If you need to inject a variable into this string that should NOT be expanded, please quote this options value in single quotes. **This option is required on Locus**. On Locus this directory is '/hpcdata/scratch/'.
 > 
 > ***Example:*** `--tmp-dir /scratch/$USER/`
+
+> ***Example for Locus:*** `--tmp-dir /hpcdata/scratch/`
 
 ### 2.4 Miscellaneous options  
 Each of the following arguments are optional, and do not need to be provided. 
@@ -150,6 +166,8 @@ Each of the following arguments are optional, and do not need to be provided.
 > ***Example:*** `--help`
 
 ## 3. Example
+
+### Biowulf
 ```bash 
 # Step 1.) Grab an interactive node,
 # do not run on head node!
@@ -158,16 +176,57 @@ module purge
 module load singularity snakemake
 
 # Step 2A.) Dry-run the pipeline
-./ervx run --input .tests/*.R?.fastq.gz \
-                  --output /data/$USER/output \
-                  --mode slurm \
-                  --dry-run
+module load snakemake singularity
+./ervx run \
+    --input /data/NCBR/*.fastq.gz \
+    --output /data/NCBR/project/results \
+    --genome mm10_70 \
+    --mode slurm \
+    --star-2-pass-basic \
+    --sif-cache /data/NCBR/dev/SIFs/ \
+    --dry-run
 
 # Step 2B.) Run the ervx pipeline
 # The slurm mode will submit jobs to 
 # the cluster. It is recommended running 
 # the pipeline in this mode.
-./ervx run --input .tests/*.R?.fastq.gz \
-                  --output /data/$USER/output \
-                  --mode slurm
+.module load snakemake singularity
+./ervx run \
+    --input /data/NCBR/*.fastq.gz \
+    --output /data/NCBR/project/results \
+    --genome mm10_70 \
+    --mode slurm \
+    --star-2-pass-basic \
+    --sif-cache /data/NCBR/dev/SIFs/
+```
+### Locus
+```bash
+# Step 1.) Grab an interactive node,
+qrsh -l h_vmem=4G -pe threaded 4
+module load snakemake
+# Change your working directory
+cd ervx/
+# On Locus --mode --tmp-dir --shared-resources --sif-cache are required options.
+# Step 2A.) Dry-run the pipeline
+./ervx run \
+    --input /hpcdata/dir/NCBR/*.fastq.gz \
+    --output /hpcdata/NCBR/project/results/ \
+    --genome mm10_70 \
+    --mode uge \
+    --star-2-pass-basic \
+    --sif-cache /hpcdata/dir/NCBR-337/SIFs/ \
+    --tmp-dir /hpcdata/scratch/ \
+    --shared-resources /hpcdata/dir/NCBR-337/SHARED_RESOURCES/ \
+    --dry-run
+
+# Step 2B.) Run the ervx pipeline
+./ervx run \
+    --input /hpcdata/dir/NCBR/*.fastq.gz \
+    --output /hpcdata/NCBR/project/results/ \
+    --genome mm10_70 \
+    --mode uge \
+    --star-2-pass-basic \
+    --sif-cache /hpcdata/dir/NCBR-337/SIFs/ \
+    --tmp-dir /hpcdata/scratch/ \
+    --shared-resources /hpcdata/dir/NCBR-337/SHARED_RESOURCES/
 ```
