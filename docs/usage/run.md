@@ -45,12 +45,24 @@ Each of the following arguments are required. Failure to provide a required argu
 > 
 > ***Example:*** `--output /data/$USER/ervx_out`
 
+  `--genome {hg38_20,mm10_70}`
+> This option defines the reference genome for your set of samples. On Biowulf and Locus, ervx does comes bundled with pre built reference files for human and mouse samples.
+
+> ***Example:*** `--genome mm10_70`
+
 ### 2.2 Analysis options
 
-Each of the following arguments are optional, and do not need to be provided. 
-
-...add non-required analysis options 
-
+---  
+  `--star-2-pass-basic`  
+> **Run STAR in per sample 2-pass mapping mode.**  
+> *type: boolean*
+> 
+> It is recommended to use this option when processing a set of unrelated samples or when processing samples in a clinical setting. It is not adivsed to use this option for a study with multiple related samples. 
+> 
+> By default, the pipeline ultilizes a multi sample 2-pass mapping approach where the set of splice junctions detected across all samples are provided to the second pass of STAR. This option overrides the default behavior so each sample will be processed in a per sample two-pass basic mode. This option should not be combined with the small RNA option. If the two options are combined, STAR will run in pass basic mode.
+> 
+> ***Example:*** `--star-2-pass-basic`
+ 
 ### 2.3 Orchestration options
 
 Each of the following arguments are optional, and do not need to be provided, except that ***`--sif-cache --mode` `--tmp-dir` and `--shared-resources` are required options on Locus.***
