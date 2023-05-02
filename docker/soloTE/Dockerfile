@@ -88,13 +88,13 @@ RUN apt-get update -qq \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN git clone https://github.com/bvaldebenitom/SoloTE.git \
-    && cd SoloTE/SoloTE_1.08 \
+    && cd SoloTE/SoloTE_1.07 \
     && sed -i '1 i #!/usr/bin/env python3' SoloTE_pipeline.py
 WORKDIR /opt2 
 
 ################ POST #################
 # Copy the Dockerfile used to create image in /opt2
 COPY Dockerfile /opt2
-RUN chmod a+x /opt2/SoloTE/SoloTE_1.08/* 
-ENV PATH="/opt2/SoloTE/SoloTE_1.08:$PATH"
+RUN chmod a+x /opt2/SoloTE/SoloTE_1.07/* 
+ENV PATH="/opt2/SoloTE/SoloTE_1.07:$PATH"
 WORKDIR /data2
