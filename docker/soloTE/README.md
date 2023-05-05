@@ -20,8 +20,8 @@ docker tag ncbr_solo_te:v0.1.0 org_account/ncbr_solo_te         # latest
 docker image ls
 
 # Push new tagged image to DockerHub
-docker push org_account/solo_te:v0.1.0
-docker push org_account/solo_te:latest
+docker push org_account/ncbr_solo_te:v0.1.0
+docker push org_account/ncbr_solo_te:latest
 ```
 
 ### Other Recommended Steps
@@ -29,7 +29,7 @@ docker push org_account/solo_te:latest
 Scan your image for known vulnerabilities:
 
 ```bash
-docker solo_te:v0.1.0
+docker ncbr_solo_te:v0.1.0
 ```
 
 > **Please Note**: Any references to `org_account` should be replaced your username if you would also like to push the image to a non-org account.
