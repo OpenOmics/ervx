@@ -40,7 +40,14 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         software-properties-common \
         dirmngr \
-        apt-transport-https \
+        gcc \
+        perl \
+        zlib1g-dev \
+        libbz2-dev \
+        liblzma-dev \
+        libcurl4-gnutls-dev \
+        libssl-dev \
+        libncurses5-dev \
         autotools-dev \
         automake \
         autoconf \
@@ -48,17 +55,13 @@ RUN apt-get update \
         bcftools \
         curl \
         git \
+        gawk \
         locales \
-        libboost-all-dev \
-        libgmp-dev \
-        libz-dev \
-        libhts-dev \
         cmake \
         make \
         python3 \
         python3-pip \
         tabix \
-        samtools \
         bedtools \
         wget \
     && apt-get clean && apt-get purge \
@@ -67,7 +70,18 @@ RUN apt-get update \
 # Set the locale
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 
+RUN ln -sf /usr/bin/python3.10 /usr/bin/python
+
 ############### INSTALL ################
+# Build SAMtools 1.17
+RUN wget https://github.com/samtools/samtools/releases/download/1.17/samtools-1.17.tar.bz2 && \
+    tar -xjvf samtools-1.17.tar.bz2 && \
+    rm samtools-1.17.tar.bz2 && \
+    cd samtools-1.17 && \
+    ./configure --prefix $(pwd) && \
+    make && \
+    make install
+
 # Install Python Packages
 RUN pip3 install --upgrade pip \
 	  && pip3 install pysam pandas
@@ -88,7 +102,9 @@ RUN apt-get update -qq \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN git clone https://github.com/bvaldebenitom/SoloTE.git \
-    && cd SoloTE/SoloTE_1.07 \
+    && cd SoloTE \
+    && find . -maxdepth 1 -not -name 'SoloTE_1.07' -exec rm -rfv '{}' \; \
+    && cd SoloTE_1.07 \
     && sed -i '1 i #!/usr/bin/env python3' SoloTE_pipeline.py
 WORKDIR /opt2 
 
@@ -97,4 +113,5 @@ WORKDIR /opt2
 COPY Dockerfile /opt2
 RUN chmod a+x /opt2/SoloTE/SoloTE_1.07/* 
 ENV PATH="/opt2/SoloTE/SoloTE_1.07:$PATH"
+ENV PATH="/opt2/samtools-1.17:$PATH"
 WORKDIR /data2
