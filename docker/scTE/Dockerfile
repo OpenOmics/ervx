@@ -1,4 +1,4 @@
-# Base image for solo_te,
+# Base image for sc_te,
 # uses Ubuntu Jammy (LTS)
 FROM ubuntu:22.04
 
@@ -44,18 +44,14 @@ RUN apt-get update \
         curl \
         git \
         locales \
-        libboost-all-dev \
-        libgmp-dev \
-        libz-dev \
-        libhts-dev \
         cmake \
         make \
-        python3 \
-        python3-pip \
         tabix \
         wget \
         samtools \
         bedtools \
+        python3 \
+        python3-pip \
     && apt-get clean && apt-get purge \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -63,9 +59,13 @@ RUN apt-get update \
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 
 ############### INSTALL ################
-RUN ln -s /usr/bin/python3 /usr/bin/python
+
+RUN ln -s /usr/bin/python3.10 /usr/bin/python
 RUN git clone https://github.com/JiekaiLab/scTE.git \
     && cd scTE \
+    && git checkout 36d492127f27ea02d204a28e0f4dea3964818725 \
+    && sed -i 's/scipy/&==1.7.3/' setup.py \
+    && sed -i 's/numpy/&==1.21.6/' setup.py \
     && python setup.py install
 WORKDIR /opt2 
 
