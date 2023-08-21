@@ -90,9 +90,9 @@ cd ervx/
     --genome mm10_70 \
     --mode uge \
     --star-2-pass-basic \
-    --sif-cache /hpcdata/dir/NCBR-337/SIFs/ \
+    --sif-cache /hpcdata/openomics/SIFs/ \
     --tmp-dir /hpcdata/scratch/ \
-    --shared-resources /hpcdata/dir/NCBR-337/SHARED_RESOURCES/ \
+    --shared-resources /hpcdata/openomics/references/ervx/SHARED_RESOURCES/ \
     --dry-run
 ```
 

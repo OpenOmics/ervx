@@ -80,9 +80,9 @@ Each of the following arguments are optional, and do not need to be provided, ex
 > **Local path to shared resources.**  
 > *type: path*
 >
-> The pipeline uses a set of shared reference files that can be re-used across reference genomes. These currently include reference files for kraken and FQScreen. These reference files can be downloaded with the build sub command's `--shared-resources`  option. With that being said, these files only need to be downloaded once. We recommend storing this files in a shared location on the filesystem that other people can access. If you are running the pipeline on Biowulf, you do NOT need to download these reference files! They already exist on the filesystem in a location that anyone can acceess; however, if you are running the pipeline on another cluster or target system, you will need to download the shared resources with the build sub command, and you will need to provide this option every time you run the pipeline. Please provide the same path that was provided to the build sub command's --shared-resources option. Again, if you are running the pipeline on Biowulf, you do NOT need to provide this option. For more information about how to download shared resources, please reference the build sub command's `--shared-resources` option. **This is a required option on Locus, shared resources are already on Locus in /hpcdata/dir/NCBR-337/SHARED_RESOURCES/.**
+> The pipeline uses a set of shared reference files that can be re-used across reference genomes. These currently include reference files for kraken and FQScreen. These reference files can be downloaded with the build sub command's `--shared-resources`  option. With that being said, these files only need to be downloaded once. We recommend storing this files in a shared location on the filesystem that other people can access. If you are running the pipeline on Biowulf, you do NOT need to download these reference files! They already exist on the filesystem in a location that anyone can acceess; however, if you are running the pipeline on another cluster or target system, you will need to download the shared resources with the build sub command, and you will need to provide this option every time you run the pipeline. Please provide the same path that was provided to the build sub command's --shared-resources option. Again, if you are running the pipeline on Biowulf, you do NOT need to provide this option. For more information about how to download shared resources, please reference the build sub command's `--shared-resources` option. **This is a required option on Locus, shared resources are already on Locus in /hpcdata/openomics/references/ervx/SHARED_RESOURCES/.**
 > 
-> ***Example:*** `--shared-resources /hpcdata/dir/NCBR-337/SHARED_RESOURCES/`
+> ***Example:*** `--shared-resources /hpcdata/openomics/references/ervx/SHARED_RESOURCES/`
 
 ---  
   `--silent`            
@@ -141,7 +141,7 @@ Each of the following arguments are optional, and do not need to be provided, ex
 > 
 > ***Example:*** `--singularity-cache /data/$USER/SIFs`
 
-> ***Example for Locus:*** `--singularity-cache /hpcdata/dir/NCBR-337/SIFs/`
+> ***Example for Locus:*** `--singularity-cache /hpcdata/openomics/SIFs/`
 
 ---  
   `--threads THREADS`   
@@ -226,9 +226,9 @@ cd ervx/
     --genome mm10_70 \
     --mode uge \
     --star-2-pass-basic \
-    --sif-cache /hpcdata/dir/NCBR-337/SIFs/ \
+    --sif-cache /hpcdata/openomics/SIFs/ \
     --tmp-dir /hpcdata/scratch/ \
-    --shared-resources /hpcdata/dir/NCBR-337/SHARED_RESOURCES/ \
+    --shared-resources /hpcdata/openomics/references/ervx/SHARED_RESOURCES/ \
     --dry-run
 
 # Step 2B.) Run the ervx pipeline
@@ -238,7 +238,7 @@ cd ervx/
     --genome mm10_70 \
     --mode uge \
     --star-2-pass-basic \
-    --sif-cache /hpcdata/dir/NCBR-337/SIFs/ \
+    --sif-cache /hpcdata/openomics/SIFs/ \
     --tmp-dir /hpcdata/scratch/ \
-    --shared-resources /hpcdata/dir/NCBR-337/SHARED_RESOURCES/
+    --shared-resources /hpcdata/openomics/references/ervx/SHARED_RESOURCES/
 ```
