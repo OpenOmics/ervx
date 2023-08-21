@@ -1,0 +1,26 @@
+{
+    "references": {
+        "rnaseq": {
+            "GENOMEFILE": "/data/OpenOmics/references/rna-seek/hg19_19/GRCh37.p13.genome.fa",
+            "GENOME": "/data/OpenOmics/references/rna-seek/hg19_19/GRCh37.p13.genome.fa",
+            "GTFFILE": "/data/OpenOmics/references/rna-seek/hg19_19/gencode.v19.annotation.gtf",
+            "GENOME_STARDIR": "/data/OpenOmics/references/rna-seek/hg19_19/STAR/2.7.6a/genome",
+            "ANNOTATE": "/data/OpenOmics/references/rna-seek/hg19_19/annotate.genes.txt",
+            "ANNOTATEISOFORMS": "/data/OpenOmics/references/rna-seek/hg19_19/annotate.isoforms.txt",
+            "REFFLAT": "/data/OpenOmics/references/rna-seek/hg19_19/refFlat.txt",
+            "BEDREF": "/data/OpenOmics/references/rna-seek/hg19_19/genes.ref.bed",
+            "GENEINFO": "/data/OpenOmics/references/rna-seek/hg19_19/geneinfo.bed",
+            "QUALIMAP_INFO": "/data/OpenOmics/references/rna-seek/hg19_19/qualimap_info.txt",
+            "KARYOBEDS": "/data/OpenOmics/references/rna-seek/hg19_19/karyobeds/",
+            "KARYOPLOTER": "/data/OpenOmics/references/rna-seek/hg19_19/karyoplot_gene_coordinates.txt",
+            "RSEMREF": "/data/OpenOmics/references/rna-seek/hg19_19/rsemref/hg19",
+            "RRNALIST": "/data/OpenOmics/references/rna-seek/hg19_19/hg19.rRNA_interval_list",
+            "ORGANISM": "hg19_19",
+            "TINREF": "/data/OpenOmics/references/rna-seek/hg19_19/transcripts.protein_coding_only.bed12",
+            "FUSIONBLACKLIST": "s3://nciccbr/Resources/RNA-seq/arriba/blacklist_hg19_hs37d5_GRCh37_v2.0.0.tsv.gz",
+            "FUSIONCYTOBAND": "s3://nciccbr/Resources/RNA-seq/arriba/cytobands_hg19_hs37d5_GRCh37_v2.0.0.tsv",
+            "FUSIONPROTDOMAIN": "s3://nciccbr/Resources/RNA-seq/arriba/protein_domains_hg19_hs37d5_GRCh37_v2.0.0.gff3",
+            "TELESCOPE_ERVS_GTF": "/data/OpenOmics/references/ervx/hg19_19/hg19_erv_telescope.gtf"
+        }
+    }
+}

@@ -1263,7 +1263,7 @@ def parsed_arguments(name, description):
                               [--threads THREADS] \\
                               --input INPUT [INPUT ...] \\
                               --output OUTPUT \\
-                              --genome {{mm10_70, hg38_20}}
+                              --genome {{mm10_70, hg38_20, hg19_19}}
 
         {1}{2}Description:{4}
           To run the pipeline with with your data, please provide a space seperated 
@@ -1289,7 +1289,7 @@ def parsed_arguments(name, description):
                                 it will be created automatically.
                                   Example: --output /data/$USER/RNA_hg38
     
-          --genome {{custom.json, mm10_70, hg38_20}}
+          --genome {{custom.json, mm10_70, hg38_20, hg19_19}}
                                 Reference genome. This option defines the reference
                                 genome of the samples. Ervx does comes bundled with
                                 pre built reference files for human and mouse samples;
@@ -1497,7 +1497,7 @@ def parsed_arguments(name, description):
         '--genome',
         required = True,
         type = lambda option: str(
-            genome_options(subparser_run, option, ['mm10_70', 'hg38_20'])
+            genome_options(subparser_run, option, ['mm10_70', 'hg38_20', 'hg19_19'])
         ),
         help = argparse.SUPPRESS
     )

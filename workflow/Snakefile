@@ -21,7 +21,14 @@ pfamily  = config['project']['pfamily']          # rnaseq
 workpath = config['project']['workpath']         # Parent Output directory
 tmpdir   = config['options']['tmp_dir']          # Temporary directory
 mode = config['options']['mode'] # slurm if running on biowulf or uge if running on locus
+genome = config['project']['annotation']
 
+counts_by_family = True
+try:
+    var = config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE']
+except KeyError: 
+    counts_by_family = False
+    config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE'] = ""
 # Read in resource information,
 # containing information about 
 # threads, mem, walltimes, etc.
@@ -61,6 +68,7 @@ dtypes=['RSEM_genes']
 # Imported rules
 include: join("rules", "common.smk")
 include: join("rules", "paired-end.smk")
+
 
 # Paired-end Target files
 rule all:
@@ -145,8 +153,9 @@ rule all:
         
         # Telescope Files
         expand(join(workpath,bams_dir,"{name}.star_rg_added.sorted.by.name.dmark.bam"), name=samples),
+        expand(join(workpath, telescope_dir, "{name}-TE_counts.tsv"), name=samples),
 
-        # Merging counts output from telescope
-        join(workpath, telescope_dir, "counts.csv"),
-        join(workpath, telescope_dir, "counts_summed_by_subfamily.csv"),
-        join(workpath, telescope_dir, "counts_summed_by_subfamily_heatmap.jpeg")
+        #Merging counts output from telescope
+        provided([join(workpath, telescope_dir, "counts.csv")], counts_by_family),
+        provided([join(workpath, telescope_dir, "counts_summed_by_subfamily.csv")], counts_by_family),
+        provided([join(workpath, telescope_dir, "counts_summed_by_subfamily_heatmap.jpeg")], counts_by_family)

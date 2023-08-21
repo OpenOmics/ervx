@@ -45,7 +45,7 @@ Each of the following arguments are required. Failure to provide a required argu
 > 
 > ***Example:*** `--output /data/$USER/ervx_out`
 
-  `--genome {hg38_20,mm10_70}`
+  `--genome {hg38_20,mm10_70,hg19_19}`
 > This option defines the reference genome for your set of samples. On Biowulf and Locus, ervx does comes bundled with pre built reference files for human and mouse samples.
 
 > ***Example:*** `--genome mm10_70`

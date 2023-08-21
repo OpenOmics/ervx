@@ -957,7 +957,7 @@ rule telescope:
 
 rule merge_telescope:
     input:
-        expand(join(workpath, telescope_dir, "{name}-TE_counts.tsv"), name=samples)
+        expand(join(workpath, telescope_dir, "{name}-TE_counts.tsv"), name=samples),
     output:
         counts=join(workpath, telescope_dir, "counts.csv"),
         counts_by_subfamily=join(workpath, telescope_dir, "counts_summed_by_subfamily.csv"),
