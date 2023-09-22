@@ -2,7 +2,7 @@
 from os.path import join
 from os import listdir
 import os, sys
-
+import json
 # 3rd party imports from pypi
 from snakemake.workflow import workflow as wf_api
 from snakemake.utils import R
@@ -22,13 +22,9 @@ workpath = config['project']['workpath']         # Parent Output directory
 tmpdir   = config['options']['tmp_dir']          # Temporary directory
 mode = config['options']['mode'] # slurm if running on biowulf or uge if running on locus
 genome = config['project']['annotation']
-
 counts_by_family = True
-try:
-    var = config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE']
-except KeyError: 
+if config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE'] == "":
     counts_by_family = False
-    config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE'] = ""
 # Read in resource information,
 # containing information about 
 # threads, mem, walltimes, etc.
@@ -156,6 +152,5 @@ rule all:
         expand(join(workpath, telescope_dir, "{name}-TE_counts.tsv"), name=samples),
 
         #Merging counts output from telescope
-        provided([join(workpath, telescope_dir, "counts.csv")], counts_by_family),
-        provided([join(workpath, telescope_dir, "counts_summed_by_subfamily.csv")], counts_by_family),
-        provided([join(workpath, telescope_dir, "counts_summed_by_subfamily_heatmap.jpeg")], counts_by_family)
+        join(workpath, telescope_dir, "counts.csv"),
+        provided([join(workpath, telescope_dir, "counts_summed_by_subfamily.csv")], counts_by_family)

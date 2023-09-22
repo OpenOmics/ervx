@@ -959,14 +959,17 @@ rule merge_telescope:
     input:
         expand(join(workpath, telescope_dir, "{name}-TE_counts.tsv"), name=samples),
     output:
-        counts=join(workpath, telescope_dir, "counts.csv"),
-        counts_by_subfamily=join(workpath, telescope_dir, "counts_summed_by_subfamily.csv"),
-        heatmap=join(workpath, telescope_dir, "counts_summed_by_subfamily_heatmap.jpeg")
+        join(workpath, telescope_dir, "counts.csv"),
+        provided([join(workpath, telescope_dir, "counts_summed_by_subfamily.csv")], counts_by_family)
     params:
         rname="pl_merge_telescope",
         rmerger=join("workflow", "scripts", "telescope_count_merge.R"),
+        outdir=join(workpath, telescope_dir),
         mode=mode,
-        ervs_fam_table=config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE']
+        ervs_fam_table = lambda _: "--family_table {0}".format(
+            config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE']
+        ) if config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE'] else ""
+
     shell:"""
     set +u
     if [ "{params.mode}" == "uge" ]; then 
@@ -974,5 +977,5 @@ rule merge_telescope:
     else
         module load R/4.1.3
     fi
-    Rscript {params.rmerger} {input} {params.ervs_fam_table}
+    Rscript {params.rmerger} -tsvs {input} {params.ervs_fam_table} -dir {params.outdir}
     """
