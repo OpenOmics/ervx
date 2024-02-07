@@ -8,7 +8,7 @@ from scripts.common import (
 # Pre Alignment Rules
 rule validator:
     """
-    Quality-control step to ensure the input FastQC files are not corrupted or
+    Quality-control step to ensure the input FastQ files are not corrupted or
     incomplete prior to running the entire workflow. Please note this rule will
     only run if the --use-singularity flag is provided to snakemake.
     @Input:
@@ -50,7 +50,6 @@ rule rawfastqc:
     output:
         join(workpath,"rawQC","{name}.R1_fastqc.zip"),
         join(workpath,"rawQC","{name}.R2_fastqc.zip"),
-        tmpdir=tmpdir,
     priority: 2
     params:
         rname='pl_rawfastqc',
