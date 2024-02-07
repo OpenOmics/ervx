@@ -21,6 +21,7 @@
 	"fastqc": {
 		"mem": "24g",
 		"threads": "32",
+		"gres": "lscratch:64",
 		"time": "1-00:00:00"
 	},
 	"fastq_screen": {
@@ -56,7 +57,8 @@
 		"time": "1-00:00:00"
 	},
 	"rawfastqc": {
-		"threads": "8"
+		"threads": "8",
+		"gres": "lscratch:64"
 	},
 	"rsem": {
 		"gres": "lscratch:500",

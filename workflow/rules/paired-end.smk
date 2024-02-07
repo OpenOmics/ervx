@@ -50,15 +50,40 @@ rule rawfastqc:
     output:
         join(workpath,"rawQC","{name}.R1_fastqc.zip"),
         join(workpath,"rawQC","{name}.R2_fastqc.zip"),
+        tmpdir=tmpdir,
     priority: 2
     params:
         rname='pl_rawfastqc',
         outdir=join(workpath,"rawQC"),
+        tmpdir=tmpdir,
     threads: int(allocated("threads", "rawfastqc", cluster)),
     envmodules: config['bin'][pfamily]['tool_versions']['FASTQCVER']
     container: config['images']['fastqc']
     shell: """
-    fastqc {input.R1} {input.R2} -t {threads} -o {params.outdir};
+    # Setups temporary directory for
+    # intermediate files with built-in 
+    # mechanism for deletion on exit
+    if [ ! -d "{params.tmpdir}" ]; then mkdir -p "{params.tmpdir}"; fi
+    tmp=$(mktemp -d -p "{params.tmpdir}")
+    trap 'rm -rf "${{tmp}}"' EXIT
+
+    # Running fastqc with local
+    # disk or a tmpdir, fastqc
+    # has been observed to lock
+    # up gpfs filesystems, adding
+    # this on request by HPC staff
+    fastqc \\
+        {input.R1} \\
+        {input.R2} \\
+        -t {threads} \\
+        -o "${{tmp}}"
+
+    # Copy output files from tmpdir
+    # to output directory
+    find "${{tmp}}" \\
+        -type f \\
+        \\( -name '*.html' -o -name '*.zip' \\) \\
+        -exec cp {{}} {params.outdir} \\;
     """
 
 
@@ -119,12 +144,35 @@ rule fastqc:
     params:
         rname='pl_fastqc',
         outdir=join(workpath,"QC"),
-        getrl=join("workflow", "scripts", "get_read_length.py"),
+        tmpdir=tmpdir,
     threads: int(allocated("threads", "fastqc", cluster)),
     envmodules: config['bin'][pfamily]['tool_versions']['FASTQCVER']
     container: config['images']['fastqc']
     shell: """
-    fastqc {input.R1} {input.R2} -t {threads} -o {params.outdir};
+    # Setups temporary directory for
+    # intermediate files with built-in 
+    # mechanism for deletion on exit
+    if [ ! -d "{params.tmpdir}" ]; then mkdir -p "{params.tmpdir}"; fi
+    tmp=$(mktemp -d -p "{params.tmpdir}")
+    trap 'rm -rf "${{tmp}}"' EXIT
+
+    # Running fastqc with local
+    # disk or a tmpdir, fastqc
+    # has been observed to lock
+    # up gpfs filesystems, adding
+    # this on request by HPC staff
+    fastqc \\
+        {input.R1} \\
+        {input.R2} \\
+        -t {threads} \\
+        -o "${{tmp}}"
+
+    # Copy output files from tmpdir
+    # to output directory
+    find "${{tmp}}" \\
+        -type f \\
+        \\( -name '*.html' -o -name '*.zip' \\) \\
+        -exec cp {{}} {params.outdir} \\;
     """
 
 
