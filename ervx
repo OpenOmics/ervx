@@ -23,11 +23,11 @@ import argparse  # potential python3 3rd party package, added in python/3.5
 
 # Pipeline Metadata and globals 
 __author__   = 'Skyler Kuhn'
-__version__  = 'v0.1.0'
+__version__  = 'v0.1.1'
 __email__    = 'kuhnsa@nih.gov'
 __home__     =  os.path.dirname(os.path.abspath(__file__))
 _name        = os.path.basename(sys.argv[0])
-_description = 'a highly-reproducible RNA-seq pipeline'
+_description = 'a highly-reproducible ERV RNA-seq pipeline'
 
 
 class Colors():
@@ -136,7 +136,7 @@ def permissions(parser, filename, *args, **kwargs):
         If file exists and user can read from file
     """
     if not exists(filename):
-        parser.error("File '{}' does not exists! Failed to provide vaild input.".format(filename))
+        parser.error("File '{}' does not exist! Failed to provide vaild input.".format(filename))
 
     if not os.access(filename, *args, **kwargs):
         parser.error("File '{}' exists, but cannot read file due to permissions!".format(filename))
@@ -985,6 +985,13 @@ def _configure(sub_args, filename, git_repo):
     # Resolves if an image needs to be pulled from an OCI registry or
     # a local SIF generated from the ervx cache subcommand exists
     sif_config = image_cache(sub_args, {})
+
+    if sub_args.ervs_fam_table:
+        ervs_fam_table = os.path.join(sub_args.output, os.path.basename(sub_args.ervs_fam_table))
+    else:
+        # ervx family annotation table is not provided,
+        # set default value to empty string
+        ervs_fam_table = ''
     # Creates config file /path/to/output/config/build.yml
     with open(filename, 'w') as fh:
         fh.write('GENOME: "{}"\n'.format(sub_args.ref_name))
@@ -998,7 +1005,7 @@ def _configure(sub_args, filename, git_repo):
         fh.write('TMP_DIR: "{}"\n'.format(sub_args.tmp_dir))
         fh.write('SHARED_RESOURCES: "{}"\n'.format(sub_args.shared_resources))
         fh.write('TELESCOPE_ERVS_GTF: "{}"\n'.format(os.path.join(sub_args.output, os.path.basename(sub_args.ervs_gtf))))
-        fh.write('ERVS_FAMILY_ANNOTATION_TABLE: "{}"\n'.format(os.path.join(sub_args.output, os.path.basename(sub_args.ervs_fam_table))))
+        fh.write('ERVS_FAMILY_ANNOTATION_TABLE: "{}"\n'.format(ervs_fam_table))
         fh.write('MODE: "{}"\n'.format(sub_args.mode))
         fh.write('READLENGTHS:\n')
         read_lengths = ['50', '75', '100', '125', '150']
@@ -1040,7 +1047,13 @@ def configure_build(sub_args, git_repo, output_path):
     required_resources = ['workflow', 'resources', 'config']
     _cp_r_safe_(source = git_repo, target = output_path, resources = required_resources)
     _configure(sub_args = sub_args, filename = os.path.join(output_path, 'config', 'build.yml'), git_repo = git_repo)
-    additional_bind_paths = _sym_refs(input_data = [sub_args.ref_fa, sub_args.ref_gtf, sub_args.ervs_gtf, sub_args.ervs_fam_table], target = output_path, make_copy = True)
+    
+    sym_link = [sub_args.ref_fa, sub_args.ref_gtf, sub_args.ervs_gtf]
+    if sub_args.ervs_fam_table:
+        # ervx family annotation table is not provided,
+        # set default value to empty string
+        sym_link = [sub_args.ref_fa, sub_args.ref_gtf, sub_args.ervs_gtf, sub_args.ervs_fam_table]
+    additional_bind_paths = _sym_refs(input_data = sym_link, target = output_path, make_copy = True)
 
     return additional_bind_paths
 
@@ -1066,7 +1079,7 @@ def build(sub_args):
         git_repo = git_repo, 
         output_path = output_path
     )
-    
+
     # Add any additional bindpaths  
     if sub_args.shared_resources:
         # Check if shared resource path
@@ -1257,7 +1270,7 @@ def parsed_arguments(name, description):
         {1}{2}Synopsis:{4}
           $ {0} run [--help] \\
                               [--prokaryote] [--small-rna] [--star-2-pass-basic] \\
-                              [--dry-run] [--mode {{slurm, local}}] \\
+                              [--dry-run] [--mode {{slurm, uge, local}}] \\
                               [--shared-resources SHARED_RESOURCES] \\
                               [--singularity-cache SINGULARITY_CACHE] \\
                               [--sif-cache SIF_CACHE] \\
@@ -1349,7 +1362,7 @@ def parsed_arguments(name, description):
                                 the pipeline remain or will be run.
                                   Example: --dry-run
 
-          --mode {{slurm,uge,local}}  
+          --mode {{slurm, uge, local}}  
                                 Method of execution. Defines the mode of execution. 
                                 Vaild options for this mode include: local or slurm. 
                                 Additional modes of exection are coming soon, default:  
@@ -1633,15 +1646,16 @@ def parsed_arguments(name, description):
         {1}{2}Synopsis:{4}
           $ {0} build [--help] \\
                                 [--shared-resources SHARED_RESOURCES] [--small-genome] \\
-                                [--dry-run] [--singularity-cache SINGULARITY_CACHE] \\
+                                [--dry-run] [--mode {{slurm, uge, local}}] \\
+                                [--singularity-cache SINGULARITY_CACHE] \\
                                 [--sif-cache SIF_CACHE] [--tmp-dir TMP_DIR] \\
+                                [--ervs-fam-table ERVS_FAM_TABLE] \\
                                 --ref-fa REF_FA \\
                                 --ref-name REF_NAME \\
                                 --ref-gtf REF_GTF \\
                                 --gtf-ver GTF_VER \\
                                 --output OUTPUT \\
-                                --ervs-gtf ERVS_GTF \\
-                                --ervs-fam-table ERVS_FAM_TABLE
+                                --ervs-gtf ERVS_GTF
 
         {1}{2}Description:{4}
           Builds the reference files for the RNA-seek pipeline from a genomic FASTA 
@@ -1691,16 +1705,16 @@ def parsed_arguments(name, description):
                               also known as Endogenous Retroviruses (ERVS). Such GTF files
                               can be downloaded from the following source 
                               http://geve.med.u-tokai.ac.jp/download/ . Typically these GTFs
-                              need to be reformatted using ./resources/clean_gtf.py . 
+                              need to be reformatted using "./resources/clean_gtf.py". 
                                 Example: --ervs-gtf Mmus38.geve.v1.polished.gtf
-          
+
+        {1}{2}Build options:{4}
           --ervs-fam-table ERVS_FAM_TABLE 
                               Annotation CSV file for transposable elements. This file is used
                               in the telescope rule to assign family to ervs, and was downloaded 
                               from http://geve.med.u-tokai.ac.jp/download/ .
-                                Example: --ervs-fam-table Mmus38.csv                                  
-        
-        {1}{2}Build options:{4}
+                                Example: --ervs-fam-table Mmus38.csv 
+
           --shared-resources SHARED_RESOURCES  
                               Path to download shared resources. The pipeline uses a
                               set of shared reference files that can be re-used across
@@ -1727,6 +1741,28 @@ def parsed_arguments(name, description):
           --dry-run           Does not execute anything. Only displays what steps in 
                               the pipeline remain or will be run.
                                 Example: --dry-run
+
+        --mode {{slurm,uge,local}}  
+                              Method of execution. Defines the mode of execution. 
+                              Vaild options for this mode include: local or slurm. 
+                              Additional modes of exection are coming soon, default:  
+                              slurm.
+                              Here is a brief description of each mode:
+                                 • local: uses local method of execution. local runs 
+                              will run serially on compute instance. This is useful 
+                              for testing, debugging, or when a users does not have
+                              access to a  high  performance  computing environment.
+                              If this option is not provided, it will default to a 
+                              slurm mode of execution. 
+                                 • slurm: uses slurm execution backend. This method 
+                              will submit jobs to a  cluster  using sbatch. It is 
+                              recommended running the pipeline in this mode as it 
+                              will be significantly faster. 
+                                Example: --mode slurm
+                                  • uge: uses UGE execution backend. This method will
+                              submit jobs to a cluster using qsub. Please set the 
+                              mode to uge when running the pipeline on LOCUS. 
+                                Example: --mode uge         
           
           --singularity-cache SINGULARITY_CACHE
                               Overrides the $SINGULARITY_CACHEDIR variable. Images
@@ -1869,7 +1905,8 @@ def parsed_arguments(name, description):
         '--ervs-fam-table',
         # Check if the file exists and if it is readable
         type = lambda file: permissions(parser, file, os.R_OK),
-        required = True,
+        required = False,
+        default = None,
         help = argparse.SUPPRESS
     )
 
@@ -1879,8 +1916,9 @@ def parsed_arguments(name, description):
     subparser_build.add_argument(
         '--mode',
         type = str,
-        required = True,
+        required = False,
         choices = ['slurm', 'uge', 'local'],
+        default = 'slurm',
         help = argparse.SUPPRESS
     )
 

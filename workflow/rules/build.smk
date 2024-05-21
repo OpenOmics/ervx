@@ -1,4 +1,5 @@
 from os.path import join, basename
+import json
 
 # Helper Functions
 def allocated(resource, rule, lookup, default="__default__"):
@@ -73,8 +74,10 @@ OUTDIR=config["OUTDIR"]
 SCRIPTSDIR=config["SCRIPTSDIR"]
 tmpdir=config["TMP_DIR"]
 TELESCOPE_ERVS_GTF=config["TELESCOPE_ERVS_GTF"]
-ERVS_FAMILY_ANNOTATION_TABLE=config["ERVS_FAMILY_ANNOTATION_TABLE"]
 MODE=config["MODE"]
+ERVS_FAMILY_ANNOTATION_TABLE=config["ERVS_FAMILY_ANNOTATION_TABLE"] \
+if config["ERVS_FAMILY_ANNOTATION_TABLE"] and config["ERVS_FAMILY_ANNOTATION_TABLE"] !='None' \
+else []
 workdir:OUTDIR
 
 # Read in resource information,
@@ -682,6 +685,8 @@ rule jsonmaker:
         rname='bl_jsonmaker',
         workdir=OUTDIR,
         genome=GENOME,
+        ervs_fam_table=lambda _: ERVS_FAMILY_ANNOTATION_TABLE \
+        if ERVS_FAMILY_ANNOTATION_TABLE else '',
     run:
         import json
         outdir=params.workdir
@@ -707,7 +712,7 @@ rule jsonmaker:
         refdict["references"]["rnaseq"]["ORGANISM"] = wildcards.genome
         refdict["references"]["rnaseq"]["TINREF"] = outdir+"transcripts.protein_coding_only.bed12"
         refdict["references"]["rnaseq"]["TELESCOPE_ERVS_GTF"] = input.ervs_gtf
-        refdict["references"]["rnaseq"]["ERVS_FAMILY_ANNOTATION_TABLE"]=input.ervs_fam_table
+        refdict["references"]["rnaseq"]["ERVS_FAMILY_ANNOTATION_TABLE"]=params.ervs_fam_table
 
         # Try to infer which Arriba reference files to add a user defined reference genome
         if 'hg19' in params.genome.lower() or \
