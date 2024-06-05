@@ -39,8 +39,11 @@ print("LIST:")
 print(l)
 print("List Length:")
 print(length(l))
-counts_merged <- Reduce(function (...) { merge(..., all = FALSE, by = "transcript") },   # Inner join
-                        l)
+# Merge per-sample counts using a full 
+# outer join and set missing values to 0
+counts_merged <- Reduce(function (...) { merge(..., all = TRUE, by = "transcript") }, l)
+counts_merged[is.na(counts_merged)] <- 0
+
 if (is.null(family_anno_table)){
   write.csv(counts_merged, paste0(out_dir,"/counts.csv"), row.names=FALSE)
   } else {
