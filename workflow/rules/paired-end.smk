@@ -1013,7 +1013,7 @@ rule merge_telescope:
         rmerger=join("workflow", "scripts", "telescope_count_merge.R"),
         outdir=join(workpath, telescope_dir),
         mode=mode,
-        ervs_fam_table = lambda _: "--family_table {0}".format(
+        ervs_fam_table = lambda _: "-f {0}".format(
             config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE']
         ) if config['references']['rnaseq']['ERVS_FAMILY_ANNOTATION_TABLE'] else ""
 
