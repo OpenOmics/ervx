@@ -1278,7 +1278,7 @@ def parsed_arguments(name, description):
                               [--threads THREADS] \\
                               --input INPUT [INPUT ...] \\
                               --output OUTPUT \\
-                              --genome {{mm10_70, hg38_20, hg19_19}}
+                              --genome {{mm10_70, hg38_20, hg19_19, mmul1_80, custom.json}}
 
         {1}{2}Description:{4}
           To run the pipeline with with your data, please provide a space seperated 
@@ -1304,19 +1304,23 @@ def parsed_arguments(name, description):
                                 it will be created automatically.
                                   Example: --output /data/$USER/RNA_hg38
     
-          --genome {{custom.json, mm10_70, hg38_20, hg19_19}}
+          --genome {{mm10_70, hg38_20, hg19_19, mmul1_80, custom.json}}
                                 Reference genome. This option defines the reference
                                 genome of the samples. Ervx does comes bundled with
                                 pre built reference files for human and mouse samples;
                                 however, it is worth noting that the pipeline can accept
                                 custom reference genomes created with the build sub
-                                command. Here is a list of available pre built genomes:
-                                mm10_70 and hg38_20. hg38_20 uses the GENCODE version 20
-                                human annotation, while mm10_70 uses ENSEMBL release 70
-                                mouse annotation. A custom reference genome created with
-                                the build sub command can also be provided. The name of
-                                this custom reference JSON file is dependent on the
-                                values provided to the following ervx build args
+                                command. 
+                                Here is a list of available pre built genomes:
+                                mm10_70, hg38_20, hg19_19,  and mmul1_80. hg38_20 uses
+                                the hg38 GENCODE version 20 human annotation, hg19_19
+                                uses the hg19 GENCODE version 19 human annotation,
+                                mm10_70 uses the mm10 ENSEMBL version 70 mouse 
+                                annotation, and mmul1_80 uses the mmul1 ENSEMBL version
+                                80 of the macaque annotation. A custom reference genome
+                                created with the build sub command can also be provided.
+                                The name of this custom reference JSON file is dependent
+                                on the values provided to the following ervx build args,
                                 '--ref-name REF_NAME --gtf-ver GTF_VER', where the name
                                 of the output file uses the following naming convention:
                                 '{{REF_NAME}}_{{GTF_VER}}.json'.
@@ -1512,7 +1516,7 @@ def parsed_arguments(name, description):
         '--genome',
         required = True,
         type = lambda option: str(
-            genome_options(subparser_run, option, ['mm10_70', 'hg38_20', 'hg19_19'])
+            genome_options(subparser_run, option, ['mm10_70', 'hg38_20', 'hg19_19', 'mmul1_80'])
         ),
         help = argparse.SUPPRESS
     )

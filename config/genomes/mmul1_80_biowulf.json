@@ -1,0 +1,24 @@
+{
+    "references": {
+        "rnaseq": {
+            "GENOMEFILE": "/data/OpenOmics/references/ervx/mmul1_80/Macaca_mulatta.MMUL_1.dna.toplevel.fa",
+            "GENOME": "/data/OpenOmics/references/ervx/mmul1_80/Macaca_mulatta.MMUL_1.dna.toplevel.fa",
+            "GTFFILE": "/data/OpenOmics/references/ervx/mmul1_80/Macaca_mulatta.MMUL_1.80.cleaned.gtf",
+            "GENOME_STARDIR": "/data/OpenOmics/references/ervx/mmul1_80/STAR/2.7.6a/genome",
+            "ANNOTATE": "/data/OpenOmics/references/ervx/mmul1_80/annotate.genes.txt",
+            "ANNOTATEISOFORMS": "/data/OpenOmics/references/ervx/mmul1_80/annotate.isoforms.txt",
+            "REFFLAT": "/data/OpenOmics/references/ervx/mmul1_80/refFlat.txt",
+            "BEDREF": "/data/OpenOmics/references/ervx/mmul1_80/genes.ref.bed",
+            "GENEINFO": "/data/OpenOmics/references/ervx/mmul1_80/geneinfo.bed",
+            "QUALIMAP_INFO": "/data/OpenOmics/references/ervx/mmul1_80/qualimap_info.txt",
+            "KARYOBEDS": "/data/OpenOmics/references/ervx/mmul1_80/karyobeds/",
+            "KARYOPLOTER": "/data/OpenOmics/references/ervx/mmul1_80/karyoplot_gene_coordinates.txt",
+            "RSEMREF": "/data/OpenOmics/references/ervx/mmul1_80/rsemref/mmul1",
+            "RRNALIST": "/data/OpenOmics/references/ervx/mmul1_80/mmul1.rRNA_interval_list",
+            "ORGANISM": "mmul1_80",
+            "TINREF": "/data/OpenOmics/references/ervx/mmul1_80/transcripts.protein_coding_only.bed12",
+            "TELESCOPE_ERVS_GTF": "/data/OpenOmics/references/ervx/mmul1_80/Mmul1.geve.v1.cleaned.gtf",
+            "ERVS_FAMILY_ANNOTATION_TABLE": "/data/OpenOmics/references/ervx/mmul1_80/Mmul1.csv"
+        }
+    }
+}
